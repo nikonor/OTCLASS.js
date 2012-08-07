@@ -1,7 +1,7 @@
 var OTCLASS = function(inPar){        
   var req = ['id','data','div_id','tmpl_id'];
   
-  // функции для замещения
+  // я└я┐п╫п╨я├п╦п╦ п╢п╩я▐ п╥п╟п╪п╣я┴п╣п╫п╦я▐
   this.__sort = function(field){
     this.data.list.sort(function(a,b){return parseInt(a[field])-parseInt(b[field])});
   }
@@ -43,53 +43,53 @@ var OTCLASS = function(inPar){
 
   this.add = function(row){ 
     mes.beforesave();
-    // если передали не массив, то делаем массив         
+    // п╣я│п╩п╦ п©п╣я─п╣п╢п╟п╩п╦ п╫п╣ п╪п╟я│я│п╦п╡, я┌п╬ п╢п╣п╩п╟п╣п╪ п╪п╟я│я│п╦п╡         
     if (!row.length){
       _row = []; 
       _row.push(row);
       row = _row;
     }
 
-    // общаемся с сервером
+    // п╬п╠я┴п╟п╣п╪я│я▐ я│ я│п╣я─п╡п╣я─п╬п╪
     rrow = this.sync('add',row);
     rrow = rrow.new_rows;
     if (rrow){
-      // если все нормально, то
-      // заполняем данные тут
+      // п╣я│п╩п╦ п╡я│п╣ п╫п╬я─п╪п╟п╩я▄п╫п╬, я┌п╬
+      // п╥п╟п©п╬п╩п╫я▐п╣п╪ п╢п╟п╫п╫я▀п╣ я┌я┐я┌
       console.log(row);
       console.log(rrow);
 
       for (var i=0;i<rrow.length;i++){
         this.data.list.push(rrow[i]);  
       }
-      // ... рендерим
+      // ... я─п╣п╫п╢п╣я─п╦п╪
       this.render();
       _light();
       return true;
     }else{
-      // сообщаем об ошибке
-      mes.e('Не удалось добавить элемент');
+      // я│п╬п╬п╠я┴п╟п╣п╪ п╬п╠ п╬я┬п╦п╠п╨п╣
+      mes.e('п²п╣ я┐п╢п╟п╩п╬я│я▄ п╢п╬п╠п╟п╡п╦я┌я▄ я█п╩п╣п╪п╣п╫я┌');
       _light();
       return false;
     }
   }
 
   this.remove = function(uslovie){
-    // общаемся с сервером
+    // п╬п╠я┴п╟п╣п╪я│я▐ я│ я│п╣я─п╡п╣я─п╬п╪
     if (this.sync('remove',uslovie)){
-      // если все нормально, то меняем внутренюю структуру
+      // п╣я│п╩п╦ п╡я│п╣ п╫п╬я─п╪п╟п╩я▄п╫п╬, я┌п╬ п╪п╣п╫я▐п╣п╪ п╡п╫я┐я┌я─п╣п╫я▌я▌ я│я┌я─я┐п╨я┌я┐я─я┐
       for (var r in this.data.list) {
         if (this.data.list[r][uslovie.field] == uslovie.eq){
           this.data.list.splice(r,1);
         }
       }
-      // ... рендерим
+      // ... я─п╣п╫п╢п╣я─п╦п╪
       this.render();
       _light();
       return true;    
     }else{
-      //  сообщаем об ошибке
-      mes.d('Не удалось удалить');
+      //  я│п╬п╬п╠я┴п╟п╣п╪ п╬п╠ п╬я┬п╦п╠п╨п╣
+      mes.d('п²п╣ я┐п╢п╟п╩п╬я│я▄ я┐п╢п╟п╩п╦я┌я▄');
       _light();
       return false;
     }
@@ -125,10 +125,10 @@ var OTCLASS = function(inPar){
   }
 
   this.update = function(uslovie,new_row){
-    // общаемся с сервером
+    // п╬п╠я┴п╟п╣п╪я│я▐ я│ я│п╣я─п╡п╣я─п╬п╪
     if (this.sync('update', uslovie, new_row)){
-      // если все нормально, то 
-      // меняем внутреннюю структуру
+      // п╣я│п╩п╦ п╡я│п╣ п╫п╬я─п╪п╟п╩я▄п╫п╬, я┌п╬ 
+      // п╪п╣п╫я▐п╣п╪ п╡п╫я┐я┌я─п╣п╫п╫я▌я▌ я│я┌я─я┐п╨я┌я┐я─я┐
       for (var r in this.data.list) {
         if (this.data.list[r][uslovie.field] == uslovie.eq){
           for (var key in new_row){
@@ -139,7 +139,7 @@ var OTCLASS = function(inPar){
       this.render();
       return true; 
     }else{
-      mes.e('Не удалось обновить запись');
+      mes.e('п²п╣ я┐п╢п╟п╩п╬я│я▄ п╬п╠п╫п╬п╡п╦я┌я▄ п╥п╟п©п╦я│я▄');
       return false;
     }
   }
@@ -148,9 +148,9 @@ var OTCLASS = function(inPar){
     mes.beforesave();
     mes.d('--- call sync for '+this.id+' ---');
     // _dark();
-    // вызов (async=false!!!!) getJSON, 
-    // если он вернет Ok, то возвращаем true, если это add, то объект с заполненными id полями
-    // иначе false
+    // п╡я▀п╥п╬п╡ (async=false!!!!) getJSON, 
+    // п╣я│п╩п╦ п╬п╫ п╡п╣я─п╫п╣я┌ Ok, я┌п╬ п╡п╬п╥п╡я─п╟я┴п╟п╣п╪ true, п╣я│п╩п╦ я█я┌п╬ add, я┌п╬ п╬п╠я┼п╣п╨я┌ я│ п╥п╟п©п╬п╩п╫п╣п╫п╫я▀п╪п╦ id п©п╬п╩я▐п╪п╦
+    // п╦п╫п╟я┤п╣ false
     var par = {dts:dts(),'obj':this.id,'do_what':'admindb','turn':type};
     if (type == 'add'){
       par['new_rows'] = par1;
