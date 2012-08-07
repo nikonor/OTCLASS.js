@@ -7,11 +7,9 @@ var OTCLASS = function(inPar){
   }
   this.before_render = function (){}
   this.after_render = function (){}
-  // this.before_sync = function (){}
-  // this.after_sync = function (){}
-  // this.before_sync = function (){}
-  // this.after_sync = function (){}
-
+  this.before_sync = function (){}
+  this.after_sync = function (){}
+  
   // data - model
   for (var key in inPar){
     mes.d('key='+key);
@@ -145,6 +143,7 @@ var OTCLASS = function(inPar){
   }
 
   this.sync = function(type,par1,par2){
+    this.before_sync();
     mes.beforesave();
     mes.d('--- call sync for '+this.id+' ---');
     // _dark();
@@ -177,8 +176,8 @@ var OTCLASS = function(inPar){
     });
     $.ajaxSetup({async:true});
 
+    this.after_sync();
     mes.d('ret='+a_ret);
-
     return a_ret;
 
   }
