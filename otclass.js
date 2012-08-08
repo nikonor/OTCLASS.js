@@ -12,7 +12,7 @@ var OTCLASS = function(inPar){
   
   // data - model
   for (var key in inPar){
-    mes.d('key='+key);
+    // mes.d('key='+key);
     this[key] = inPar[key];
   }
 
@@ -31,6 +31,7 @@ var OTCLASS = function(inPar){
       this.__sort(this.sort);
     }
     this.view = this.tmpl(this.data);
+    $(this.place).empty();
     $(this.place).empty().append(this.view);
     this.after_render();
   };
@@ -146,6 +147,8 @@ var OTCLASS = function(inPar){
     this.before_sync();
     mes.beforesave();
     mes.d('--- call sync for '+this.id+' ---');
+
+
     // _dark();
     // вызов (async=false!!!!) getJSON, 
     // если он вернет Ok, то возвращаем true, если это add, то объект с заполненными id полями
@@ -160,6 +163,19 @@ var OTCLASS = function(inPar){
       par['uslovie'] = par1;
       par['new_rows'] = par2;            
     }
+
+    if (this.debug == 1){
+      mes.d('--- debug ---');
+      var ii = -1;
+      for (var r in new_rows){
+        this.new_rows[r].id = ii;
+        ii--;
+      }
+      return par;
+    }else if (this.debug == 2){
+      return false;
+    }
+
 
     $.ajaxSetup({async:false});
     var a_ret = true;
