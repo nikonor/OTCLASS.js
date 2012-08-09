@@ -167,8 +167,8 @@ var OTCLASS = function(inPar){
     if (this.debug == 1){
       mes.d('--- debug ---');
       var ii = -1;
-      for (var r in new_rows){
-        this.new_rows[r].id = ii;
+      for (var r in par.new_rows){
+        par.new_rows[r].id = ii;
         ii--;
       }
       return par;
