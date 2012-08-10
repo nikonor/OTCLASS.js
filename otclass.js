@@ -12,19 +12,18 @@ var OTCLASS = function(inPar){
     }
 
     var count = uslovie.length;
+    var eq_count = 0;    
     for (var i=0;i<count;i++){
-      var eq_count = 0;
-      for (var key in uslovie[i]){
-        if (uslovie[i][key] == row[key]){
-          eq_count++;
-        }
-      }
-      if (eq_count == count){
-        return true;
+      if (uslovie[i]['eq'] == row[uslovie[i]['field']]){
+        eq_count++;
       }
     }
-
-    return false;
+    
+    if (eq_count == count){
+      return true;
+    }else{
+      return false;
+    }
   }
 
   // функции для замещения
@@ -101,12 +100,21 @@ var OTCLASS = function(inPar){
 
   this.remove = function(uslovie){
     // общаемся с сервером
+    var array4del = [];
     if (this.sync('remove',uslovie)){
       // если все нормально, то меняем внутренюю структуру
       for (var r in this.data.list) {
-        if (this.data.list[r][uslovie.field] == uslovie.eq){
-          this.data.list.splice(r,1);
+        // if (this.data.list[r][uslovie.field] == uslovie.eq){
+        mes.d('loop step for r='+r);  
+        if (this.__eq(this.data.list[r],uslovie)){
+          // this.data.list.splice(r,1);
+          // mes.d('помечаем на удаление r='+r);  
+          array4del.push(r);
         }
+      }
+      for (var r in array4del.reverse()){
+        // mes.d('удаляем r='+r+', id='+array4del[r]);
+        this.data.list.splice(array4del[r],1);
       }
       // ... рендерим
       this.render();

@@ -117,6 +117,14 @@
     demo.add({'name':'Джон До','age':25});
   }
 
+  var remove_row_with_param = function(id){
+    mes.d('call remove_row with id='+id);
+    demo.remove([ {'field':'id','eq':id},
+                  {'field':'age','eq':$('#age4del').val()}
+                ]);
+  }
+
+
   var remove_row = function(id){
     mes.d('call remove_row with id='+id);
     demo.remove({'field':'id','eq':id});
@@ -184,6 +192,7 @@
 
 <script id="tmpl" type="text/x-handlebars-template">
   <h2>Чтобы исправить имя или возраст, сделайте двойной клик на нужном поле</h2>
+  Удаляем только такого возраста: <input id="age4del" value="21" class="input-small"><br>
   <table id="t" class="table table-bordered">
     <thead>
       <tr>
@@ -208,7 +217,8 @@
             {{age}}
           </td>
           <td>
-            <a href="#" class="btn btn-small btn-primary" onClick="remove_row({{id}});">-</a>
+            <a href="#" class="btn btn-small btn-primary" onClick="remove_row({{id}});">Удалить</a>
+            <a href="#" class="btn btn-small btn-primary" onClick="remove_row_with_param({{id}});">Удалить с учетом возраста</a>
           </td>
         </tr>
       {{/each}}
