@@ -39,8 +39,8 @@ OTCLASS.js
         'data':data,
         'div_id':'div1',
         'tmpl_id':'nb_tmpl',
-        'sort':'field1'
-	      'debug':1,
+        'sort':'field1',
+	'debug':1,
         FUNCNAME:funcname
         });
 
