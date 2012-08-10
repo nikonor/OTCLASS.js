@@ -18,7 +18,7 @@ var OTCLASS = function(inPar){
         eq_count++;
       }
     }
-    
+
     if (eq_count == count){
       return true;
     }else{
@@ -104,16 +104,12 @@ var OTCLASS = function(inPar){
     if (this.sync('remove',uslovie)){
       // если все нормально, то меняем внутренюю структуру
       for (var r in this.data.list) {
-        // if (this.data.list[r][uslovie.field] == uslovie.eq){
-        mes.d('loop step for r='+r);  
         if (this.__eq(this.data.list[r],uslovie)){
-          // this.data.list.splice(r,1);
-          // mes.d('помечаем на удаление r='+r);  
           array4del.push(r);
         }
       }
+      
       for (var r in array4del.reverse()){
-        // mes.d('удаляем r='+r+', id='+array4del[r]);
         this.data.list.splice(array4del[r],1);
       }
       // ... рендерим
@@ -131,7 +127,8 @@ var OTCLASS = function(inPar){
   this.update_item = function (uslovie,field,new_val){
     var good = true;
     for (var r in this.data.list) {
-      if (this.data.list[r][uslovie.field] == uslovie.eq){
+      // if (this.data.list[r][uslovie.field] == uslovie.eq){
+      if ( this.__eq( this.data.list[r], uslovie.eq) ){        
         this.data.list[r][field] = new_val;
         if (!this.sync('update',uslovie,this.data.list[r])){
           good = false;
@@ -141,7 +138,8 @@ var OTCLASS = function(inPar){
 
     if (good){
       for (var r in this.data.list) {
-        if (this.data.list[r][uslovie.field] == uslovie.eq){
+        // if (this.data.list[r][uslovie.field] == uslovie.eq){
+        if ( this.__eq( this.data.list[r], uslovie.eq) ){          
           this.data.list[r][field] = new_val;
           this.render();
           _light();
@@ -163,7 +161,8 @@ var OTCLASS = function(inPar){
       // если все нормально, то 
       // меняем внутреннюю структуру
       for (var r in this.data.list) {
-        if (this.data.list[r][uslovie.field] == uslovie.eq){
+        // if (this.data.list[r][uslovie.field] == uslovie.eq){
+        if ( this.__eq(this.data.list[r], uslovie.eq) ){          
           for (var key in new_row){
             this.data.list[r][key] = new_row[key];
           }
