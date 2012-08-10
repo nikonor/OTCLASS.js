@@ -1,6 +1,32 @@
 var OTCLASS = function(inPar){        
   var req = ['id','data','div_id','tmpl_id'];
   
+  // сложная проверка на совпадения
+
+  this.__eq = function (row,uslovie){
+    // если условие не массив, то делаем массив
+    if (!uslovie.length){
+      _uslovie = []; 
+      _uslovie.push(uslovie);
+      uslovie = _uslovie;
+    }
+
+    var count = uslovie.length;
+    for (var i=0;i<count;i++){
+      var eq_count = 0;
+      for (var key in uslovie[i]){
+        if (uslovie[i][key] == row[key]){
+          eq_count++;
+        }
+      }
+      if (eq_count == count){
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   // функции для замещения
   this.__sort = function(field){
     this.data.list.sort(function(a,b){return parseInt(a[field])-parseInt(b[field])});
@@ -196,6 +222,6 @@ var OTCLASS = function(inPar){
     mes.d('ret='+a_ret);
     return a_ret;
 
-  }
+  }  
 
 }; // OTCLASS
