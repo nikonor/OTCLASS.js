@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<!-- saved from url=(0066)http://twitter.github.com/bootstrap/examples/starter-template.html -->
+<html lang="ru">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Demo for OTCLASS.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Demo for OTCLASS.js">
+    <meta name="author" content="nikonor">
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="http://twitter.github.com/bootstrap/assets/ico/favicon.ico">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Demo for OTCLASS.js</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#">Список</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+          <div class="nav-collapse pull-right">
+            <ul class="nav">
+              <li><a href="https://docs.google.com">Помощь</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="well span12" style="display: none; color: blue;" id="divDebug"></div>
+    <div class="well span12" style="display: none; color: red;" id="divError"></div>
+    <div class="well span12" style="display: none; color: green ;" id="divMessage"></div>
+    <div id="div_shadow" class="shadow" style="left: 0px; top: 0px; width: 100%; height: 100%; position: fixed; background-color: rgb(0, 0, 0); z-index: 10; opacity: 0.7; display: none; ">
+      <img src="img/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%;">
+    </div>
+
+    <div class="container" id="container">
+
+      <h1>Bootstrap starter template</h1>
+      <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+
+    </div> <!-- /container -->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script language="JavaScript" src="js/jquery.js"></script>
+    <script language="JavaScript" src="js/otmes.js"> </script>
+    <script language="JavaScript" src="js/func.js"></script>
+    <script language="JavaScript" src="js/handlebars-1.0.0.beta.6.js"> </script>
+    <script language="JavaScript" src="../otclass.js"></script>
+    <script language="JavaScript" src="js/func.js"></script>
+    <script language="JavaScript" src="js/bootstrap-transition.js"></script>
+    <script language="JavaScript" src="js/bootstrap-alert.js"></script>
+    <script language="JavaScript" src="js/bootstrap-modal.js"></script>
+    <script language="JavaScript" src="js/bootstrap-dropdown.js"></script>
+    <script language="JavaScript" src="js/bootstrap-scrollspy.js"></script>
+    <script language="JavaScript" src="js/bootstrap-tab.js"></script>
+    <script language="JavaScript" src="js/bootstrap-tooltip.js"></script>
+    <script language="JavaScript" src="js/bootstrap-popover.js"></script>
+    <script language="JavaScript" src="js/bootstrap-button.js"></script>
+    <script language="JavaScript" src="js/bootstrap-collapse.js"></script>
+    <script language="JavaScript" src="js/bootstrap-carousel.js"></script>
+    <script language="JavaScript" src="js/bootstrap-typeahead.js"></script>
+
+
+<script type="text/javascript">
+  var _d = '1';
+  var demo;
+
+  var tmp_data = {'list':[
+    {'id':1,'name':'Иванов','age':21},
+    {'id':2,'name':'Петров','age':20},
+    {'id':3,'name':'Сидоров','age':22},
+  ]};
+
+  function _dark(){
+    $('#div_shadow').show();
+  }
+
+  function _light(){
+    $('#div_shadow').hide();
+  }
+
+  var add_row = function(){
+    mes.d('call add_row');
+    demo.add({'name':'Джон До','age':25});
+  }
+
+  var remove_row = function(id){
+    mes.d('call remove_row with id='+id);
+    demo.remove({'field':'id','eq':id});
+  }
+
+  var beginEdit = function (){
+    mes.d('call beginEdit from td with id='+this.id);
+    var a = this.id.split('=');
+    tmpl = Handlebars.compile($("#edit").html());
+    view = tmpl({'field':a[1],'id':a[2],'val':trimStr($(this).html())});
+    $(this).empty().append(view);
+
+  }
+
+  var saveEdit = function(f,i){
+    mes.d('call saveEdit');
+    // var a = this.id.split('-');
+    demo.update_item({'field':'id','eq':i},f,$('#new_val_'+f+'_'+i).val());
+  }
+
+  var cancelEdit = function(f,i){
+    mes.d('call cancelEdit');
+    $('#td-'+f+'-'+i).html( $('#old_val_'+f+'_'+i).val() );
+  }
+
+
+  $(document).ready(function(){
+    _dark();
+
+    mes = new otmes(_d);
+    mes.d('--- Start of demo ---');
+
+    $('.editable').live('dblclick', beginEdit);
+
+    demo = new OTCLASS({
+      'id':'demo',
+      'data':tmp_data,
+      'div_id': 'container',
+      'tmpl_id': 'tmpl',
+      'sort':'age',
+      'debug':1
+    });
+
+    _light();
+  });
+</script>
+
+<script id="edit" type="text/x-handlebars-template">
+  <input type=hidden id="old_val_{{field}}_{{id}}" value="{{val}}">
+  <input type=text id="new_val_{{field}}_{{id}}" class="input-small" value="{{val}}">
+  <a href="#" class="btn btn-small btn-primary" onClick="saveEdit('{{field}}',{{id}});">Save</a>
+  <a href="#" class="btn btn-small btn-primary" onClick="cancelEdit('{{field}}',{{id}});">Cancel</a>
+</script>
+
+
+<script id="tmpl" type="text/x-handlebars-template">
+  <table id="t" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>
+          Имя
+        </th>
+        <th>
+          Возраст
+        </th>
+        <th>
+          <a href="#" class="btn btn-small btn-primary" onClick="add_row();">+</a>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each list}}
+        <tr>
+          <td class="editable" id="td=name={{id}}">
+            {{name}}
+          </td>
+          <td class="editable" id="td=age={{id}}">
+            {{age}}
+          </td>
+          <td>
+            <a href="#" class="btn btn-small btn-primary" onClick="remove_row({{id}});">-</a>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</script>
+
+  
+  </body>
+</html>
