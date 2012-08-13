@@ -11,6 +11,11 @@ var OTCLASS = function(inPar){
       uslovie = _uslovie;
     }
 
+    mes.d('--- begin __eq ---')
+    mes.d(uslovie);
+    mes.d(row);
+    mes.d('--- end __eq ---');
+
     var count = uslovie.length;
     var eq_count = 0;    
     for (var i=0;i<count;i++){
@@ -128,7 +133,7 @@ var OTCLASS = function(inPar){
     var good = true;
     for (var r in this.data.list) {
       // if (this.data.list[r][uslovie.field] == uslovie.eq){
-      if ( this.__eq( this.data.list[r], uslovie.eq) ){        
+      if ( this.__eq( this.data.list[r], uslovie) ){        
         this.data.list[r][field] = new_val;
         if (!this.sync('update',uslovie,this.data.list[r])){
           good = false;
@@ -139,7 +144,7 @@ var OTCLASS = function(inPar){
     if (good){
       for (var r in this.data.list) {
         // if (this.data.list[r][uslovie.field] == uslovie.eq){
-        if ( this.__eq( this.data.list[r], uslovie.eq) ){          
+        if ( this.__eq( this.data.list[r], uslovie) ){          
           this.data.list[r][field] = new_val;
           this.render();
           _light();
@@ -162,7 +167,7 @@ var OTCLASS = function(inPar){
       // меняем внутреннюю структуру
       for (var r in this.data.list) {
         // if (this.data.list[r][uslovie.field] == uslovie.eq){
-        if ( this.__eq(this.data.list[r], uslovie.eq) ){          
+        if ( this.__eq(this.data.list[r], uslovie) ){          
           for (var key in new_row){
             this.data.list[r][key] = new_row[key];
           }
