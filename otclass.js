@@ -189,7 +189,7 @@ var OTCLASS = function(inPar){
     var par = {dts:dts(),'obj':this.id,'do_what':'admindb','turn':type};
     if (type == 'add'){
       par['new_rows'] = par1;
-      par['test_hash'] = {'field':'id','eq':2};
+      // par['test_hash'] = {'field':'id','eq':2};
     }else if(type == 'remove'){
       par['uslovie'] = par1;
     }else if(type == 'update'){
@@ -198,12 +198,14 @@ var OTCLASS = function(inPar){
     }
 
     if (this.debug == 1){
-      mes.d('--- debug ---');
+      mes.d('--- begin debug ---');
       var ii = -1;
       for (var r in par.new_rows){
         par.new_rows[r].id = ii;
         ii--;
       }
+      mes.d(par);
+      mes.d('--- end debug ---');
       return par;
     }else if (this.debug == 2){
       return false;
