@@ -1,7 +1,7 @@
 var OTCLASS = function(inPar){    
 
   mes.d('Создаем объект OTCLASS с id='+inPar['id']);    
-  
+
   var req = ['id','data','div_id','tmpl_id'];
   
   // сложная проверка на совпадения
@@ -72,6 +72,20 @@ var OTCLASS = function(inPar){
   this.render();
 
   //control
+
+  this.get = function(uslovie){
+    // возвращаем строку по условию
+    var ret = [];
+    for (var r in this.data.list) {
+      if (this.__eq(this.data.list[r],uslovie)){
+        ret.push(this.data.list[r]);
+      }
+    }
+    if (ret.length){
+      return ret;
+    }
+    return false;
+  }
 
   this.add = function(row){ 
     mes.beforesave();

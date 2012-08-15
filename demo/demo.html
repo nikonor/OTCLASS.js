@@ -130,6 +130,17 @@
     demo.remove({'field':'id','eq':id});
   }
 
+  var find_row = function(){
+    mes.beforesave();
+    var r = demo.get({'field':'age','eq':$('#age4del').val()});
+    if (r){
+      mes.m(r);
+    }else{
+      mes.e('Не удалось найти людей такого возвраста');
+    }
+  }
+
+
   var beginEdit = function (){
     mes.d('call beginEdit from td with id='+this.id);
     var a = this.id.split('-');
@@ -192,7 +203,10 @@
 
 <script id="tmpl" type="text/x-handlebars-template">
   <h2>Чтобы исправить имя или возраст, сделайте двойной клик на нужном поле</h2>
-  Удаляем только такого возраста: <input id="age4del" value="21" class="input-small"><br>
+  Возраст: <input id="age4del" value="21" class="input-small">
+  <a href="#" class="btn btn-small btn-primary" onClick="find_row();"> Find </a>
+  <br>
+
   <table id="t" class="table table-bordered">
     <thead>
       <tr>
