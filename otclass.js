@@ -1,4 +1,7 @@
-var OTCLASS = function(inPar){        
+var OTCLASS = function(inPar){    
+
+  mes.d('Создаем объект OTCLASS с id='+inPar['id']);    
+  
   var req = ['id','data','div_id','tmpl_id'];
   
   // сложная проверка на совпадения
