@@ -11,10 +11,10 @@ var OTCLASS = function(inPar){
       uslovie = _uslovie;
     }
 
-    mes.d('--- begin __eq ---')
-    mes.d(uslovie);
-    mes.d(row);
-    mes.d('--- end __eq ---');
+    // mes.d('--- begin __eq ---')
+    // mes.d(uslovie);
+    // mes.d(row);
+    // mes.d('--- end __eq ---');
 
     var count = uslovie.length;
     var eq_count = 0;    
@@ -211,6 +211,7 @@ var OTCLASS = function(inPar){
       }
       mes.d(par);
       mes.d('--- end debug ---');
+      this.after_sync();
       return par;
     }else if (this.debug == 2){
       return false;
