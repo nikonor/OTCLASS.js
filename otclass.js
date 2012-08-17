@@ -1,6 +1,6 @@
 var OTCLASS = function(inPar){    
 
-  mes.d('Создаем объект OTCLASS с id='+inPar['id']);    
+  mes.d('Create object OTCLASS with id='+inPar['id']);    
 
   var req = ['id','data','div_id','tmpl_id'];
   
