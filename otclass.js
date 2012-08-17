@@ -150,8 +150,18 @@ var OTCLASS = function(inPar){
     var good = true;
     for (var r in this.data.list) {
       // if (this.data.list[r][uslovie.field] == uslovie.eq){
-      if ( this.__eq( this.data.list[r], uslovie) ){        
-        this.data.list[r][field] = new_val;
+
+      if ( this.__eq( this.data.list[r], uslovie) ){ 
+        var obj = this.data.list[r];
+        $.each(field.split('.'), function(i,o){
+          var new_obj = obj[o];
+          if (typeof(new_obj) == 'object'){
+            obj = new_obj;
+          }else{
+            obj[o] = new_val;
+            return false;
+          }
+        });
         if (!this.sync('update',uslovie,this.data.list[r])){
           good = false;
         }
