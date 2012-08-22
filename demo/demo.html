@@ -143,9 +143,20 @@
     o.remove({'field':'id','eq':id});
   }
 
+  var find_row = function(){
+    mes.beforesave();
+    var r = demo.get({'field':'age','eq':$('#age4del').val()});
+    if (r){
+      mes.m(r);
+    }else{
+      mes.e('Не удалось найти людей такого возвраста');
+    }
+  }
+
+
   var beginEdit = function (){
     mes.d('call beginEdit from td with id='+this.id);
-    var a = this.id.split('=');
+    var a = this.id.split('-');
     tmpl = Handlebars.compile($("#edit").html());
     view = tmpl({'field':a[1],'id':a[2],'val':trimStr($(this).html())});
     $(this).empty().append(view);
@@ -217,7 +228,10 @@
   <div class="alert alert-warning">
     Чтобы исправить имя или возраст, сделайте двойной клик на нужном поле
   </div>
-  Удаляем только такого возраста: <input id="age4del" value="21" class="input-mini"><br><br>
+  Возраст: <input id="age4del" value="21" class="input-mini">
+  <a href="#" class="btn btn-small btn-primary" onClick="find_row();"><i class="icon-search icon-white"></i> Найти людей по возрасту</a>
+  <br><br>
+
   <table id="t" class="table table-bordered">
     <thead>
       <tr>
@@ -235,15 +249,15 @@
     <tbody>
       {{#each list}}
         <tr>
-          <td class="editable" id="td=name={{id}}">
+          <td class="editable" id="td-name-{{id}}">
             {{name}}
           </td>
-          <td class="editable" id="td=age={{id}}">
+          <td class="editable" id="td-age-{{id}}">
             {{age}}
           </td>
           <td>
             <a href="#" class="btn btn-small btn-primary" onClick="remove_row(demo, {{id}});">Удалить</a>
-            <a href="#" class="btn btn-small btn-primary" onClick="remove_row_with_param(demo, {{id}}, {'field':'age','eq':$('#age4del').val()});">Удалить с учетом возраста</a>
+            <a href="#" class="btn btn-small btn-primary" onClick="remove_row_with_param(demo, {{id}}, {'field':'age','eq':$('#age4del').val()});">Удалить, если возраст совпадает</a>
           </td>
         </tr>
       {{/each}}
@@ -271,13 +285,13 @@
         <tbody>
           {{each(i, v) list}}
             <tr>
-              <td id="jtd=name=${v.id}">
+              <td id="jtd-name-${v.id}">
                 ${v.name}
               </td>
-              <td id="jtd=weight=${v.id}" style="text-align: right;">
+              <td id="jtd-weight-${v.id}" style="text-align: right;">
                 ${v.weight}
               </td>
-              <td id="jtd=ears=${v.id}" style="text-align: right;">
+              <td id="jtd-ears-${v.id}" style="text-align: right;">
                 ${v.ears}
               </td>
             </tr>

@@ -1,4 +1,7 @@
-var OTCLASS = function(inPar){        
+var OTCLASS = function(inPar){    
+
+  mes.d('Create object OTCLASS with id='+inPar['id']);    
+
   var req = ['id','data','div_id','tmpl_id'];
   
   // сложная проверка на совпадения
@@ -11,10 +14,10 @@ var OTCLASS = function(inPar){
       uslovie = _uslovie;
     }
 
-    mes.d('--- begin __eq ---')
-    mes.d(uslovie);
-    mes.d(row);
-    mes.d('--- end __eq ---');
+    // mes.d('--- begin __eq ---')
+    // mes.d(uslovie);
+    // mes.d(row);
+    // mes.d('--- end __eq ---');
 
     var count = uslovie.length;
     var eq_count = 0;    
@@ -79,6 +82,20 @@ var OTCLASS = function(inPar){
 
   //control
 
+  this.get = function(uslovie){
+    // возвращаем строку по условию
+    var ret = [];
+    for (var r in this.data.list) {
+      if (this.__eq(this.data.list[r],uslovie)){
+        ret.push(this.data.list[r]);
+      }
+    }
+    if (ret.length){
+      return ret;
+    }
+    return false;
+  }
+
   this.add = function(row){ 
     mes.beforesave();
     // если передали не массив, то делаем массив         
@@ -142,8 +159,18 @@ var OTCLASS = function(inPar){
     var good = true;
     for (var r in this.data.list) {
       // if (this.data.list[r][uslovie.field] == uslovie.eq){
-      if ( this.__eq( this.data.list[r], uslovie) ){        
-        this.data.list[r][field] = new_val;
+
+      if ( this.__eq( this.data.list[r], uslovie) ){ 
+        var obj = this.data.list[r];
+        $.each(field.split('.'), function(i,o){
+          var new_obj = obj[o];
+          if (typeof(new_obj) == 'object'){
+            obj = new_obj;
+          }else{
+            obj[o] = new_val;
+            return false;
+          }
+        });
         if (!this.sync('update',uslovie,this.data.list[r])){
           good = false;
         }
@@ -220,6 +247,7 @@ var OTCLASS = function(inPar){
       }
       mes.d(par);
       mes.d('--- end debug ---');
+      this.after_sync();
       return par;
     }else if (this.debug == 2){
       return false;
