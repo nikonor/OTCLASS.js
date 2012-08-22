@@ -48,8 +48,13 @@ var OTCLASS = function(inPar){
 
   this.place = $('#'+inPar.div_id);
   this.seq = -1;
-  this.tmpl = Handlebars.compile($("#"+inPar.tmpl_id).html());;
 
+  this.tmpl_type = this.tmpl_type || 'Handlebars';
+  if (this.tmpl_type == 'Handlebars') {
+    this.tmpl = Handlebars.compile($("#"+inPar.tmpl_id).html());
+  } else if (this.tmpl_type == 'jquery-tmpl') {
+    this.tmpl = $("#"+inPar.tmpl_id).template();
+  }
 
   //view
   this.view = '';
@@ -60,7 +65,11 @@ var OTCLASS = function(inPar){
     if (this.sort){
       this.__sort(this.sort);
     }
-    this.view = this.tmpl(this.data);
+    if (this.tmpl_type == 'Handlebars') {
+      this.view = this.tmpl(this.data);
+    } else if (this.tmpl_type == 'jquery-tmpl') {
+      this.view = $.tmpl(this.tmpl, this.data);
+    }
     $(this.place).empty();
     $(this.place).empty().append(this.view);
     this.after_render();

@@ -64,12 +64,17 @@
       <img src="img/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%;">
     </div>
 
+    <h3>Handlebars:</h3><br>
     <div class="container" id="container">
-
       <h1>Bootstrap starter template</h1>
       <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
 
     </div> <!-- /container -->
+
+    <h3>jquery-tmpl:</h3><br>
+    <div class="container" id="jcontainer">
+    </div>
+
 
     <!-- Le javascript
     ================================================== -->
@@ -78,6 +83,7 @@
     <script language="JavaScript" src="js/otmes.js"> </script>
     <script language="JavaScript" src="js/func.js"></script>
     <script language="JavaScript" src="js/handlebars-1.0.0.beta.6.js"> </script>
+    <script language="JavaScript" src="js/jquery.tmpl.min.js"></script>
     <script language="JavaScript" src="../otclass.js"></script>
     <script language="JavaScript" src="js/func.js"></script>
     <script language="JavaScript" src="js/bootstrap-transition.js"></script>
@@ -97,11 +103,18 @@
 <script type="text/javascript">
   var _d = '1';
   var demo;
+  var jdemo;
 
   var tmp_data = {'list':[
     {'id':1,'name':'Иванов','age':21},
     {'id':2,'name':'Петров','age':20},
     {'id':3,'name':'Сидоров','age':22},
+  ]};
+
+  var jtmp_data = {'list': [
+    {id: 1, name: 'Чалкин', weight: 142, ears: 1},
+    {id: 2, name: 'Палкин', weight: 67, ears: 3},
+    {id: 3, name: 'Залкинд', weight: 13, ears: 2},
   ]};
 
   function _dark(){
@@ -112,22 +125,22 @@
     $('#div_shadow').hide();
   }
 
-  var add_row = function(){
+  var add_row = function(o){
     mes.d('call add_row');
-    demo.add({'name':'Джон До','age':25});
+    o.add({'name':'Джон До','age':25, 'weight': 78, ears: 12});
   }
 
-  var remove_row_with_param = function(id){
+  var remove_row_with_param = function(o, id, param){
     mes.d('call remove_row with id='+id);
-    demo.remove([ {'field':'id','eq':id},
-                  {'field':'age','eq':$('#age4del').val()}
+    o.remove([ {'field':'id','eq':id},
+                param
                 ]);
   }
 
 
-  var remove_row = function(id){
+  var remove_row = function(o, id){
     mes.d('call remove_row with id='+id);
-    demo.remove({'field':'id','eq':id});
+    o.remove({'field':'id','eq':id});
   }
 
   var beginEdit = function (){
@@ -168,6 +181,16 @@
       'debug':1
     });
 
+    jdemo = new OTCLASS({
+      id        : 'jdemo',
+      data      : jtmp_data,
+      div_id    : 'jcontainer',
+      tmpl_id   : 'jtmpl',
+      sort      : 'age',
+      debug     : 1,
+      tmpl_type : 'jquery-tmpl'
+    });
+
     _light();
   });
 </script>
@@ -191,8 +214,10 @@
 </script>
 
 <script id="tmpl" type="text/x-handlebars-template">
-  <h2>Чтобы исправить имя или возраст, сделайте двойной клик на нужном поле</h2>
-  Удаляем только такого возраста: <input id="age4del" value="21" class="input-small"><br>
+  <div class="alert alert-warning">
+    Чтобы исправить имя или возраст, сделайте двойной клик на нужном поле
+  </div>
+  Удаляем только такого возраста: <input id="age4del" value="21" class="input-mini"><br><br>
   <table id="t" class="table table-bordered">
     <thead>
       <tr>
@@ -203,7 +228,7 @@
           Возраст
         </th>
         <th>
-          <a href="#" class="btn btn-small btn-primary" onClick="add_row();">+</a>
+          <a href="#" class="btn btn-small btn-primary" onClick="add_row(demo);">+</a>
         </th>
       </tr>
     </thead>
@@ -217,13 +242,52 @@
             {{age}}
           </td>
           <td>
-            <a href="#" class="btn btn-small btn-primary" onClick="remove_row({{id}});">Удалить</a>
-            <a href="#" class="btn btn-small btn-primary" onClick="remove_row_with_param({{id}});">Удалить с учетом возраста</a>
+            <a href="#" class="btn btn-small btn-primary" onClick="remove_row(demo, {{id}});">Удалить</a>
+            <a href="#" class="btn btn-small btn-primary" onClick="remove_row_with_param(demo, {{id}}, {'field':'age','eq':$('#age4del').val()});">Удалить с учетом возраста</a>
           </td>
         </tr>
       {{/each}}
     </tbody>
   </table>
+</script>
+
+<script id="jtmpl" type="text/x-jquery-tmpl">
+  <div class="row">
+    <div class="span4">
+      <table id="jt" class="table table-bordered">
+        <thead>
+          <tr style="background-color: #ccc; text-align: center;">
+            <th style="text-align: center;">
+              Фамилия
+            </th>
+            <th style="text-align: center;">
+              Вес
+            </th>
+            <th style="text-align: center;">
+              Количество ушей
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{each(i, v) list}}
+            <tr>
+              <td id="jtd=name=${v.id}">
+                ${v.name}
+              </td>
+              <td id="jtd=weight=${v.id}" style="text-align: right;">
+                ${v.weight}
+              </td>
+              <td id="jtd=ears=${v.id}" style="text-align: right;">
+                ${v.ears}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <a href="#" class="btn btn-small btn-primary" onClick="add_row(jdemo);">Добавить строку</a>
+      <br><br>
+    </div>
+  </div>
 </script>
 
   
