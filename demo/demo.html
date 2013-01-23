@@ -15,6 +15,11 @@
       body {
         padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
       }
+      td.editable {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+      }
     </style>
     <link href="css/bootstrap-responsive.css" rel="stylesheet">
 
@@ -181,7 +186,7 @@
     mes = new otmes(_d);
     mes.d('--- Start of demo ---');
 
-    $('.editable').live('dblclick', beginEdit);
+    $(document).on('dblclick', '.editable', beginEdit);
 
     demo = new OTCLASS({
       'id':'demo',
