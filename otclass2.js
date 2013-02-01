@@ -43,7 +43,7 @@ var OTCLASS2 = function(inPar){
 
 
   rollback_add = function(action, data){
-    console.log('call rollback_add');
+    // console.log('call rollback_add');
     var new_data = [];
     $.each(action['obj']['data'],function(i,o){
       if (data['new_row']['__otclass_id__'] != o['__otclass_id__']) {
@@ -56,7 +56,7 @@ var OTCLASS2 = function(inPar){
   this.rollback_add = rollback_add;
 
   rollback_remove = function(action, data){
-    console.log('call rollback_remove');
+    // console.log('call rollback_remove');
     var new_data = [];
     // new_data.pus
     action['obj']['data'].push(data['old_row'])
@@ -66,7 +66,7 @@ var OTCLASS2 = function(inPar){
   this.rollback_remove = rollback_remove;
 
   rollback_update = function(action, data){
-    console.log('call rollback_update');
+    // console.log('call rollback_update');
     var new_data = [];
     $.each(action['obj']['data'],function(i,o){
       if (data['new_row']['__otclass_id__'] != o['__otclass_id__']) {
@@ -145,11 +145,11 @@ var OTCLASS2 = function(inPar){
       for (var f in filter_list){
         var u = {}; u[f] = filter_list[f];
         if (!this.__check(u,this.data[i])){
-          console.log('there:'+this.data[i]['name']+':'+this.data[i]['age']);
+          // console.log('there:'+this.data[i]['name']+':'+this.data[i]['age']);
           y_count++;
         }
       }
-      console.log(this.data[i]['name']+':f_count='+f_count+', y_count='+y_count);
+      // console.log(this.data[i]['name']+':f_count='+f_count+', y_count='+y_count);
       if (f_count == y_count){
         this.data[i]['__show__'] = true;
       }
@@ -206,6 +206,15 @@ var OTCLASS2 = function(inPar){
 
   this.set = function (key,value){
     this[key] = value;
+  }
+
+  this.__get_row = function (id){
+    for (var i=0; i< this.data.length; i++){
+      if (this.data[i]['__otclass_id__'] == id){
+        return i
+      }
+    }
+    return false;
   }
 
   this.get = function (key){
@@ -333,7 +342,7 @@ var OTCLASS2 = function(inPar){
     if (uslovie.length){
       for (var i = 0; i < uslovie.length; i++) {
         for (var k in uslovie[i]){
-          console.log('loop k='+k);
+          // console.log('loop k='+k);
           if (uslovie[i][k]['val']){
             filter_list[k] = uslovie[i][k];
           }else{
@@ -343,7 +352,7 @@ var OTCLASS2 = function(inPar){
       };
     }else{
       for (var k in uslovie){
-        console.log('k='+k);
+        // console.log('k='+k);
         if (uslovie[k]['val']){
           filter_list[k] = uslovie[k];
         }else{
@@ -353,7 +362,7 @@ var OTCLASS2 = function(inPar){
     }
 
     this.page_no = 1;    
-    console.log(filter_list);
+    // console.log(filter_list);
 
     // for (var i = 0; i < this.data.length ; i++) {
     //   if ( on == 'on' && this.data[i]['__show__'] == true && !this.__check(uslovie,this.data[i]) ){
@@ -381,7 +390,7 @@ var OTCLASS2 = function(inPar){
       return '';
     }
 
-    console.log('call sync');
+    // console.log('call sync');
     for (var dts in d) {
       // сохраняем данне, чтобы потом можно было откатиться.
       action_queue[dts] = {'new_row':d[dts]['new_row'],'old_row':d[dts]['old_row'],obj:this};
@@ -396,20 +405,32 @@ var OTCLASS2 = function(inPar){
       }else if ( d[dts]['turn'] == 'add' ){
         par['new_row'] = d[dts]['new_row'];
       }
-      console.log('send to server');
-      console.log(par);
-      console.log('action_queue');
-      console.log(action_queue);
+      // console.log('send to server');
+      // console.log(par);
+      // console.log('action_queue');
+      // console.log(action_queue);
 
       $.ajax({
           url:this.script_name,
           data:par,
           dataType:'json',
           success:function(data){
-            console.log('recived from server');
-            console.log(data);
+            // console.log('recived from server');
+            // console.log(data);
             if (data['status'] == 'Ok'){
-              console.log('OK');
+              // console.log('OK');
+              var flag = false;
+              var ID = action_queue[data['dts']]['obj'].__get_row(data.new_row['__otclass_id__']);
+              for (var k in data.new_row){
+                if ( !/^\_\_/.test(k) && data.new_row[k] != action_queue[data['dts']]['obj'].data[ID][k] ){
+                  // console.log(action_queue[data['dts']]['obj'].data[ID]);
+                  action_queue[data['dts']]['obj'].data[ID][k] = data.new_row[k];
+                  // console.log('change data for k='+k);
+                  // console.log(action_queue[data['dts']]['obj'].data[ID]);
+                  flag = true;
+                }
+              }
+              action_queue[data['dts']]['obj'].render();
             }else{
               onError(data['error_text']+'\n\naction:'+data['turn']+'\nobject:'+(data['turn'] == 'add'?data['new_row']['name']:data['old_row']['name'])+'\nROLLBACK');
               if (data['turn'] == 'add'){
