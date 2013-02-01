@@ -506,6 +506,10 @@ var OTCLASS2 = function(inPar){
             if ( parseInt(r[k]) >= parseInt(u[i][k][j]['val'])){
               y_count++;
             }
+          }else if (u[i][k][j]['type'] == 'between'){
+            if ( parseInt(u[i][k][j]['val'][0]) <= parseInt(r[k]) && parseInt(r[k]) <= parseInt(u[i][k][j]['val'][1]) ){
+              y_count++;
+            }
           }else if (u[i][k][j]['type'] == 'like'){
             // mes.d('call like,'+y_count);
             // mes.d('val='+u[i][k][j]['val']);
