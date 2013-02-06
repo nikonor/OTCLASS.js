@@ -414,6 +414,7 @@ var OTCLASS2 = function(inPar){
           url:this.script_name,
           data:par,
           dataType:'json',
+          type:'POST',
           success:function(data){
             // console.log('recived from server');
             // console.log(data);
@@ -511,9 +512,7 @@ var OTCLASS2 = function(inPar){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == 'like'){
-            // mes.d('call like,'+y_count);
-            // mes.d('val='+u[i][k][j]['val']);
-            // mes.d('r[k]='+r[k]);
+            u[i][k][j]['val'] = u[i][k][j]['val'].replace(/\s/g,".*?");
             var re = new RegExp(u[i][k][j]['val'],'i');
             if ( re.test(r[k]) ){
               y_count++;
