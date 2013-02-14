@@ -218,8 +218,6 @@ var OTCLASS2 = function(inPar){
   }
 
   this.get_row = function(uslovie){
-    console.log('call get_row');
-    console.log(uslovie);
     for (var i = 0; i < this.data.length ; i++) {
       if (this.__check(uslovie,this.data[i])){
         return this.data[i];
