@@ -83,9 +83,32 @@ var OTCLASS2 = function(inPar){
 
   // Прочие функции
   // функции для замещения
-  this.__sort = function(field,d){
+  this.__sort = function(fields,d){
     if (!d){d = this}
-    d.data.sort(function(a,b){return parseInt(a[field])-parseInt(b[field])});
+    console.log(fields);
+    function dynamicSort(field) {
+      var sortOrder = 1;
+      if(field[0] === "-") {
+          sortOrder = -1;
+          field = field.substr(1, field.length - 1);
+      }
+      return function (a,b) {
+          var result = (a[field] < b[field]) ? -1 : (a[field] > b[field]) ? 1 : 0;
+          return result * sortOrder;
+      }
+    }
+    function dynamicSortMultiple(fields) {
+      console.log(fields);
+      return function (obj1, obj2) {
+        var i = 0, result = 0, number_of_fields = fields.length;
+        while(result === 0 && i < number_of_fields) {
+          result = dynamicSort(fields[i])(obj1, obj2);
+          i++;
+        }
+        return result;
+      }
+    }
+    d.data.sort(dynamicSortMultiple(fields))
   }
   this.before_render = function (){};
   this.after_render = function (){};
@@ -156,6 +179,9 @@ var OTCLASS2 = function(inPar){
     };
 
     if (this.sort){
+      if (!$.isArray(this.sort)){
+        this.__sort([this.sort,], this);  
+      }
       this.__sort(this.sort,this);
     }
 
@@ -427,7 +453,7 @@ var OTCLASS2 = function(inPar){
           success:function(data){
             // console.log('recived from server');
             // console.log(data);
-            if (data['status'] == 'Ok'){
+            if (data['status'].toUpperCase() == 'OK'){
               // console.log('OK');
               var flag = false;
               var ID = action_queue[data['dts']]['obj'].__get_row(data.new_row['__otclass_id__']);
