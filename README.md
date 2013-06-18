@@ -51,7 +51,8 @@ otclass.js и otclass2.js
         'div_id':'div1',
         'tmpl_id':'nb_tmpl',
         'sort':['field1', '-field2'],
-	      'debug':1,//otclass.js
+        'stringify': 1,
+	      'debug':1,//otclass.js,
 	      'notsync': 1, // otclass2.js  
         'page_limit':10,
         'script_name':'/script.pl',
