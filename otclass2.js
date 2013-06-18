@@ -92,7 +92,7 @@ var OTCLASS2 = function(inPar){
           field = field.substr(1, field.length - 1);
       }
       return function (a,b) {
-          var result = ((a[field] < b[field]) ? -1 : (a[field] > b[field]) ? 1 : 0);
+          var result = (a[field] < b[field] ? -1 : (a[field] > b[field]) ? 1 : 0);
           return result * sortOrder;
       }
     }
