@@ -85,20 +85,18 @@ var OTCLASS2 = function(inPar){
   // функции для замещения
   this.__sort = function(fields,d){
     if (!d){d = this}
-    console.log(fields);
-    function dynamicSort(field) {
+    var dynamicSort = function(field) {
       var sortOrder = 1;
       if(field[0] === "-") {
           sortOrder = -1;
           field = field.substr(1, field.length - 1);
       }
       return function (a,b) {
-          var result = (a[field] < b[field]) ? -1 : (a[field] > b[field]) ? 1 : 0;
+          var result = ((a[field] < b[field]) ? -1 : (a[field] > b[field]) ? 1 : 0);
           return result * sortOrder;
       }
     }
-    function dynamicSortMultiple(fields) {
-      console.log(fields);
+    var dynamicSortMultiple = function(fields) {
       return function (obj1, obj2) {
         var i = 0, result = 0, number_of_fields = fields.length;
         while(result === 0 && i < number_of_fields) {
@@ -316,10 +314,12 @@ var OTCLASS2 = function(inPar){
 
     this.data = new_data;
     var DATA = this.data;
+    // console.log(DATA);
 
     if (this.data.length < old_len){
       this.render();
       ret = {'status':'Ok'};
+      // console.log('syncing');
       this.sync(data4sync);      
     }else{
       ret = {'status':'error','error_text':'Ничего не было удалено'}; 
@@ -440,21 +440,18 @@ var OTCLASS2 = function(inPar){
       }else if ( d[dts]['turn'] == 'add' ){
         par['new_row'] = d[dts]['new_row'];
       }
-      // console.log('send to server');
-      // console.log(par);
-      // console.log('action_queue');
-      // console.log(action_queue);
-
+      
+      if (this.stringify) {
+        par = JSON.stringify(par);
+      }
+      
       $.ajax({
-          url:this.script_name,
-          data:par,
-          dataType:'json',
-          type:'POST',
+          url:      this.script_name,
+          data:     par,
+          dataType: 'json',
+          type:     'POST',
           success:function(data){
-            // console.log('recived from server');
-            // console.log(data);
-            if (data['status'].toUpperCase() == 'OK'){
-              // console.log('OK');
+            if (data['status'] == 'Ok'){
               var flag = false;
               var ID = action_queue[data['dts']]['obj'].__get_row(data.new_row['__otclass_id__']);
               for (var k in data.new_row){
@@ -523,6 +520,7 @@ var OTCLASS2 = function(inPar){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '=' || u[i][k][j]['type'] == '=='){
+            // console.log(parseInt(u[i][k][j]['val'], parseInt(r[k]) ));
             if (parseInt(u[i][k][j]['val']) == parseInt(r[k])){
               y_count++;
             }
