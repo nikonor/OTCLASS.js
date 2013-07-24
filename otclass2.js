@@ -118,6 +118,13 @@ var OTCLASS2 = function(inPar){
 
   // перегоняем входные параметры
   for (var key in inPar){
+    if (key == 'div_id'){
+      if (/[a-zA-Z]/.test(inPar[key].substr(0,1))){
+        console.log('тут');
+        this[key] = '#'+inPar[key];
+        inPar[key] = this[key];
+      }
+    }    
     this[key] = inPar[key];
   }
 
@@ -142,7 +149,7 @@ var OTCLASS2 = function(inPar){
   };
 
   // View: тут готовим темплейт
-  this.place = $('#'+inPar.div_id);
+  this.place = $(inPar.div_id);
   this.seq = -1;
 
   this.tmpl_type = this.tmpl_type || 'Handlebars';

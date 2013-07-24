@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)https://umb.oiltrade.ru/cgi-bin/main/otclass2.pl# -->
+<html lang="ru"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta charset="UTF-8">
+    <title>Demo for OTCLASS.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Demo for OTCLASS.js">
+    <meta name="author" content="nikonor">
+
+    <!-- Le styles -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+    </style>
+    <link href="css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="http://twitter.github.com/bootstrap/assets/ico/apple-touch-icon-57-precomposed.png">
+  <style type="text/css">#TnITTtw-tooltip-wrap {
+  position: absolute;
+  z-index: 9999;
+  font-family: Tahoma;
+  font-size: 13px;
+  line-height: normal
+}
+
+  .TnITTtw-inside-layout {
+
+  }
+
+    .TnITTtw-content {
+      
+    }</style><style type="text/css">/* Local ID &#8212; mndocdiojkckhpnhpeminpalidafeink */
+/* Web Store ID &#8212; ihmgiclibbndffejedjimfjmfoabpcke */
+
+.TnITTtw-help-selected-wrap {
+  border: 1px solid #C7C6C2;
+  box-shadow: 0 0 10px rgba(43, 43, 43, 0.325);
+  border-radius: 4px;
+  width: 231px
+}
+
+  .TnITTtw-help-inside-layout {
+    height: 133px;
+    background: #F5F5F5;
+    border-radius: 3px
+  }
+
+    .TnITTtw-left-particle {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+      box-shadow: inset 0 1px 0 white;
+      color: #4E4E4E;
+      text-shadow: 0 1px 0 white;
+      width: 194px;
+      display: inline-block;
+      border-right: 1px solid #D9D9D9
+    }
+
+      .TnITTtw-content-layout {
+        text-align: left;
+        margin: 10px 15px
+      }
+
+        .TnITTtw-variant-bunch-wrap {
+
+        }
+
+          .TnITTtw-variant-bunch-wrap .inside-layout {
+
+          }
+
+            .TnITTtw-main-variant-wrap {
+
+            }
+
+              .TnITTtw-main-variant {
+                font-weight: 700;
+                font-size: 15px;
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.775);
+                display: inline-block;
+                vertical-align: top;
+                color: #2B2B2B
+              }
+
+            .TnITTtw-variants-by-pos {
+              
+            }
+
+              .TnITTtw-TnITTtw-variant-row {
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.775)
+              }
+
+                .TnITTtw-v-pos {
+                  font-weight: 700;
+                  margin-top: 10px;
+                  font-size: 12px;
+                  color: #545454
+                }
+
+                  .TnITTtw-v-pos:first-child {
+                    margin-top: 8px
+                  }
+
+                .TnITTtw-v-closest-wrap {
+                  font-size: 13px;
+                  color: #4E4E4E
+                }
+
+                  .TnITTtw-v-item {
+                    display: inline-block
+                  }
+
+        .TnITTtw-listen-disabled {
+          opacity: 0.475;
+          cursor: default
+        }
+
+    .TnITTtw-right-particle {
+      background: rgba(255, 255, 255, 0.125);
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+      display: inline-block;
+      width: 36px;
+      height: 133px;
+      vertical-align: top;
+      box-shadow: inset 1px 0 3px rgba(43, 43, 43, 0.05), inset 0 1px 0 #F5F5F5
+    }
+
+      .TnITTtw-sidebar {
+
+      }
+
+        .TnITTtw-sbutton {
+          position: absolute;
+          -webkit-user-select: none;
+          cursor: pointer
+        }
+
+        .TnITTtw-listen-button {
+          width: 16px;
+          height: 17px;
+          background: url(chrome-extension://ihmgiclibbndffejedjimfjmfoabpcke/resources/images/sprites/sprite.png);
+          background-position: -54px 153px;
+          margin: 10px 0 0 10px
+        }
+
+          .TnITTtw-listen-button:active, .TnITTtw-listen-disabled {
+            background-position: -54px 136px
+          }
+
+/* ========== */
+/* Scrollbars */
+
+#TnITTtw-trVisibleLayout {
+  position: relative !important;
+  overflow: hidden;
+  height: 133px;
+  width: 100%
+}
+
+#TnITTtw-tr-scrollbar {
+  position: absolute;
+  display: block;
+  width: 9px; 
+  height: 135px; 
+  font-size: 1px
+}
+
+#TnITTtw-track { 
+  position: absolute;
+  left: 185px;
+  top: -134px;
+  width: 11px;
+  height: 129px;
+  background: transparent
+}
+
+#TnITTtw-dragBar {
+  position: absolute; 
+  left: 1px;
+  top: 1px;
+  width: 5px; 
+  height: 10px;
+  background: rgba(43, 43, 43, 0.475);
+  cursor: pointer;
+  border-radius: 3px;
+  box-shadow: 0 1px 0 #FFF
+}
+
+  #TnITTtw-dragBar:hover, #TnITTtw-dragBar:active {
+    background: rgba(43, 43, 43, 0.775)
+  } 
+
+#TnITTtw-scrollbar, #TnITTtw-track, #TnITTtw-dragBar {
+  -webkit-user-select: none
+}</style><style type="text/css">.TnITTtw-arrow {
+  display: none;
+  width: 12px;
+  height: 6px;
+  background: url(chrome-extension://ihmgiclibbndffejedjimfjmfoabpcke/resources/images/sprites/sprite.png);
+  position: relative
+}
+
+.TnITTtw-top-arrow {
+  background-position: -108px 148px;
+  bottom: -1px
+}
+
+.TnITTtw-bottom-arrow {
+  background-position: -108px 154px;
+  top: -1px
+}</style><style type="text/css">#TnITTtw-tooltip-wrap {
+  position: absolute;
+  z-index: 9999;
+  font-family: Tahoma;
+  font-size: 13px;
+  line-height: normal
+}
+
+  .TnITTtw-inside-layout {
+
+  }
+
+    .TnITTtw-content {
+      
+    }</style><style type="text/css"></style><style type="text/css"></style></head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="./demo2_files/demo2.html">Demo for OTCLASS.js</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="./demo2_files/demo2.html">Home</a></li>
+              <li><a href="./demo2_files/demo2.html">Список</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+          <div class="nav-collapse pull-right">
+            <ul class="nav">
+              <li><a href="https://docs.google.com/">Помощь</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+  
+    <div class="well span12" style="display: none; color: blue;" id="divDebug"></div>
+    <div class="well span12" style="display: none; color: red;" id="divError"></div>
+    <div class="well span12" style="display: none; color: green ;" id="divMessage"></div>
+    <div id="div_shadow" class="shadow" style="left: 0px; top: 0px; width: 100%; height: 100%; position: fixed; background-color: rgb(0, 0, 0); z-index: 10; opacity: 0.7; display: none;">
+      <img src="img/ajax-loader.gif" style="position: absolute; left: 50%; top: 50%;">
+    </div>
+
+    
+    <!-- div class="container" id="container">
+      <h1>Bootstrap starter template</h1>
+      <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+
+    </div //-->
+    <div class="container">
+      <h3>Handlebars:</h3><br>
+      <input type="checkbox" id="fil" onclick="fiter_toggle();">Все, кто младше 20
+      <input type="checkbox" id="fil2" onclick="fiter_toggle2();">Найти всех QWE
+    </div>
+
+    <div class="container cont" id="container2">
+      <h1>Bootstrap starter template</h1>
+      <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+    </div>
+    <div class="container cont" id="container3">
+      <h1>Bootstrap starter template</h1>
+      <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+    </div>
+
+
+    <!-- h3>jquery-tmpl:</h3><br>
+    <div class="container" id="jcontainer">
+      <h1>Bootstrap starter template</h1>
+      <p>Use this document as a way to quick start any new project.<br> All you get is this message and a barebones HTML document.</p>
+    </div //-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script language="JavaScript" src="js/jquery.js"></script>
+    <script language="JavaScript" src="js/otmes.js"> </script>
+    <script language="JavaScript" src="../otclass2.js"></script>
+    <script language="JavaScript" src="js/func.js"></script>
+    <script language="JavaScript" src="js/handlebars-1.0.0.beta.6.js"> </script>
+    <script language="JavaScript" src="js/jquery.tmpl.min.js"></script>
+    <script language="JavaScript" src="js/bootstrap-transition.js"></script>
+    <script language="JavaScript" src="js/bootstrap-alert.js"></script>
+    <script language="JavaScript" src="js/bootstrap-modal.js"></script>
+    <script language="JavaScript" src="js/bootstrap-dropdown.js"></script>
+    <script language="JavaScript" src="js/bootstrap-scrollspy.js"></script>
+    <script language="JavaScript" src="js/bootstrap-tab.js"></script>
+    <script language="JavaScript" src="js/bootstrap-tooltip.js"></script>
+    <script language="JavaScript" src="js/bootstrap-popover.js"></script>
+    <script language="JavaScript" src="js/bootstrap-button.js"></script>
+    <script language="JavaScript" src="js/bootstrap-collapse.js"></script>
+    <script language="JavaScript" src="js/bootstrap-carousel.js"></script>
+    <script language="JavaScript" src="js/bootstrap-typeahead.js"></script>
+
+
+<script type="text/javascript">
+  var _d = '';
+  var demo;
+  var jdemo;
+  var mes = new otmes(_d);
+  // mes.d('--- Start of demo ---');
+
+
+  var tmp_data = [
+{id:1,name:'Name 01',age:21},
+{id:2,name:'Name 02',age:20},
+{id:3,name:'Name 03',age:22},
+{id:4,name:'Name 04',age:31},
+{id:5,name:'Name 05',age:24},
+{id:6,name:'Name 06',age:37},
+{id:7,name:'Name 07',age:37},
+{id:8,name:'Name QWE 08',age:6},
+{id:8,name:'Name QWE 09',age:26},
+{id:10,name:'Name QWE 10',age:11},
+{id:11,name:'Name QWE 11',age:13},
+{id:12,name:'Name QWE 12',age:11},
+{id:13,name:'Name QWE 13',age:4},
+{id:14,name:'Name QWE 14',age:37},
+{id:15,name:'Name 15',age:37},
+{id:16,name:'Name 16',age:7},
+{id:17,name:'Name 17',age:12},
+{id:18,name:'Name 18',age:22},
+{id:19,name:'Name 19',age:27},
+{id:20,name:'Name 20',age:12},
+{id:21,name:'Name 21',age:38},
+{id:22,name:'Name 22',age:30},
+];
+
+
+  var jtmp_data = [
+    {id: 1, name: 'Чалкин', weight: 142, ears: 1},
+    {id: 2, name: 'Палкин', weight: 67, ears: 3},
+    {id: 3, name: 'Залкинд', weight: 13, ears: 2},
+  ];
+
+  function _dark(){
+    $('#div_shadow').show();
+    // mes.d('dark');
+  }
+
+  function _light(){
+    $('#div_shadow').hide();
+    // mes.d('light');
+  }
+
+  $(document).ready(function(){
+    _dark();
+
+
+    // $('.editable').live('dblclick', beginEdit);
+
+    // demo = new OTCLASS({
+    //   'id':'demo',
+    //   'data':tmp_data,
+    //   'div_id': 'container',
+    //   'tmpl_id': 'tmpl',
+    //   'sort':'age',
+    //   'debug':1
+    // });
+
+
+    demo2 = new OTCLASS2({
+      'id':'demo',
+      'data':tmp_data,
+      'div_id': '.cont',
+      'script_name' : '/cgi-bin/main/otclass2.pl',
+      'tmpl_id': 'tmpl',
+      'sort':'age',
+      'page_limit':10,
+      'notsync':1,
+      'before_action':function(){$('#div_shadow').show();mes.beforesave();},
+      'after_action':function(){$('#div_shadow').hide();},
+      'onError':function(error_text){alert('Server return error.\n'+error_text);}
+    });
+
+
+    // jdemo = new OTCLASS({
+    //   id        : 'jdemo',
+    //   data      : jtmp_data,
+    //   div_id    : 'jcontainer',
+    //   tmpl_id   : 'jtmpl',
+    //   sort      : 'weight',
+    //   debug     : 1,
+    //   tmpl_type : 'jquery-tmpl'
+    // });
+
+    _light();
+  });
+
+  function add_row(){
+    // var e = demo2.add({'id':100,'name':'Николаев Л.','age':39});
+    // if (e['status'] == 'Ok'){
+    //   mes.m('Добавление удалось');
+    // }else{
+    //   mes.e(e['error_text']);
+    // }
+    var e = demo2.add({'id':101,'name':'Николаев','age':2});
+    if (e['status'] == 'Ok'){
+      mes.m('Добавление удалось');
+    }else{
+      mes.e(e['error_text']);
+    }
+  }
+
+  function remove_row(){
+    var e = demo2.remove([
+        {'id':[{'type':'==','val':101}]},
+        {'age':[{'type':'>','val':1}]}
+        ]);
+    if (e['status'] == 'Ok'){
+      mes.m('Удаление удалось');
+    }else{
+      mes.e(e['error_text']);
+    }    
+  }
+
+
+  function update_row(){
+    var e = demo2.update({'id':[{'type':'==','val':101}]},{'name':'НИКОЛАЕВ','age':3});
+    if (e['status'] == 'Ok'){
+      mes.m('Обновление удалось');
+    }else{
+      mes.e(e['error_text']);
+    }        
+  }
+
+
+  function fiter_toggle(){
+    if ($('#fil').attr('checked')){
+      // mes.d('filter on');
+      demo2.filter({'age':{'type':'<','val':20}});
+      // $('#fil').prop({'checked':'checked'})
+    }else{
+      // mes.d('filter off');
+      demo2.filter({'age':{'type':'<','val':''}});
+      // $('#fil').prop({'checked':''})
+    }
+  }
+
+
+  function fiter_toggle2(){
+    if ($('#fil2').attr('checked')){
+      // mes.d('filter2 on');
+      demo2.filter({'name':{'type':'like','val':'QWE'}});
+    }else{
+      // mes.d('filter2 off');
+      demo2.filter({'name':{'type':'like','val':''}});
+    }
+  }
+
+
+  function find_row(){
+
+  }
+</script>
+
+<script id="tmpl2" type="text/x-handlebars-template">
+  <a href="#" class="btn btn-small btn-primary" onClick="add_row();">+</a>
+  <a href="#" class="btn btn-small btn-primary" onClick="remove_row();">-</a>
+  <a href="#" class="btn btn-small btn-primary" onClick="remove2_row();">--</a>
+  <a href="#" class="btn btn-small btn-primary" onClick="update_row();">-+</a>
+  <select id="sel">
+    <option value="">---
+    {{#each data}}
+      <option value="{{id}}">{{name}}
+    {{/each}}
+  </select>
+</script>
+
+
+
+<script id="edit" type="text/x-handlebars-template">
+  <input type=hidden id="old_val_{{field}}_{{id}}" value="{{val}}">
+  <input type=text id="new_val_{{field}}_{{id}}" class="input-small" value="{{val}}">
+  <a href="#" class="btn btn-small btn-primary" onClick="saveEdit('{{field}}',{{id}});">Save</a>
+  <a href="#" class="btn btn-small btn-primary" onClick="cancelEdit('{{field}}',{{id}});">Cancel</a>
+</script>
+
+<script id="tmpl" type="text/x-handlebars-template">
+  <!-- div class="alert alert-warning">
+    Чтобы исправить имя или возраст, сделайте двойной клик на нужном поле
+  </div>
+  Возраст: <input id="age4del" value="21" class="input-mini">
+  <a href="#" class="btn btn-small btn-primary" onClick="find_row();"><i class="icon-search icon-white"></i> Найти людей по возрасту</a>
+  <br><br //-->
+
+  <table id="t" class="table table-bordered">
+    <thead>
+      <tr>
+        <th>
+          Имя
+        </th>
+        <th>
+          Возраст
+        </th>
+        <th>
+          <a href="#" class="btn btn-small btn-primary" onClick="add_row();">+</a>
+          <a href="#" class="btn btn-small btn-primary" onClick="update_row();">Обновить</a>
+          <a href="#" class="btn btn-small btn-primary" onClick="remove_row();">Удалить</a> 
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each data}}
+        <tr>
+          <td class="editable" id="td-name-{{id}}">
+            {{name}}
+          </td>
+          <td class="editable" id="td-age-{{id}}">
+            {{age}}
+          </td>
+          <td>
+            &nbsp;
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan=3 style="text-align:center">
+        
+          <ul class="pager">
+          {{#if leftnav}} 
+            <li><a href="#" onClick="demo2.set('page_no',{{leftnav}}); demo2.render();" style="text-decoration:none;">&larr;</a></li>
+          {{/if}}
+          &nbsp;&nbsp;{{id}}&nbsp; 
+          {{#if rightnav}}   
+            <li><a href="#" onClick="demo2.set('page_no',{{rightnav}}); demo2.render();" style="text-decoration:none;">&rarr;</a></li>
+          {{/if}}
+          </ul>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</script>
+
+<script id="jtmpl" type="text/x-jquery-tmpl">
+  <div class="row">
+    <div class="span4">
+      <table id="jt" class="table table-bordered">
+        <thead>
+          <tr style="background-color: #ccc; text-align: center;">
+            <th style="text-align: center;">
+              Фамилия
+            </th>
+            <th style="text-align: center;">
+              Вес
+            </th>
+            <th style="text-align: center;">
+              Количество ушей
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{each(i, v) data}}
+            <tr>
+              <td id="jtd-name-${v.id}">
+                ${v.name}
+              </td>
+              <td id="jtd-weight-${v.id}" style="text-align: right;">
+                ${v.weight}
+              </td>
+              <td id="jtd-ears-${v.id}" style="text-align: right;">
+                ${v.ears}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <a href="#" class="btn btn-small btn-primary" onClick="add_row(jdemo);">Добавить строку</a>
+      <br><br>
+    </div>
+  </div>
+</script>
+
+  
+  
+<div style="display: none;" id="orbiousinterest_dialog"><div class="container">  <div class="header">Mark as unread</div>  URL <input type="text" value="" class="url" readonly="readonly"><br>  Title <input type="text" value="" class="title"><br>  Tags <input type="text" value="tags, seperated by commas" class="tags empty">  <div class="buttons">     <input type="button" value="Cancel" class="cancel">     <input type="button" value="Save" class="save">  </div></div></div><a id="ORBVIOUS_DOMWindowHost" href="https://umb.oiltrade.ru/cgi-bin/main/otclass2.pl#orbiousinterest_dialog"></a></body></html>
