@@ -472,7 +472,7 @@ var OTCLASS2 = function(inPar){
               }
               action_queue[data['dts']]['obj'].render();
             }else{
-              onError(data['error_text']+'\n\naction:'+data['turn']+'\nobject:'+(data['turn'] == 'add'?data['new_row']['name']:data['old_row']['name'])+'\nROLLBACK');
+              onError(data['error_text']+'\n\naction:'+data['turn']+'\nobject:'+JSON.stringify(data)+'\nROLLBACK');
               if (data['turn'] == 'add'){
                 rollback_add(action_queue[data['dts']],data);
               }else if (data['turn'] == 'update'){
