@@ -429,8 +429,8 @@ var OTCLASS2 = function(inPar){
 
     this.before_sync();
     if (this.notsync){
-      return '';
       this.after_sync();
+      return '';
     }
 
     // console.log('call sync');
