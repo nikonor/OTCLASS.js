@@ -458,6 +458,7 @@ var OTCLASS2 = function(inPar){
           data:     par,
           dataType: 'json',
           type:     'POST',
+          context:  this, 
           success:function(data){
             if (data['status'] == 'Ok'){
               var flag = false;
