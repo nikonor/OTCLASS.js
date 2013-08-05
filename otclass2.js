@@ -279,7 +279,6 @@ var OTCLASS2 = function(inPar){
       rows[i]['__otclass_id__'] = this.__uniq_gen();
       rows[i]['__show__'] = true;
       this.data.push(rows[i]);
-      mes.d('add row: name='+rows[i]['name']);
       var key = dts();if(data4sync.hasOwnProperty(key)){key=key+'-'}
       data4sync[key] = {'turn':'add','id':null,'new_row':this.__clone(rows[i]),'old_row':{}};
     };
@@ -492,13 +491,26 @@ var OTCLASS2 = function(inPar){
   }
 
 
-  // mes.d('Finish create object OTCLASS ver 2 id='+inPar['id']); 
-  // mes.d('---');   
-  // console.log(this);
-
 
   // рисуем окончательную версию
   this.render();
+
+
+  this.check_update = function(new_data){
+    console.log(new_data);
+    console.log(this.data);
+    $.each(this.data,function(i,o){
+      $.each(new_data,function(j,oo){
+        $.each(o,function(k,ooo){
+          // console.log(o.id+','+oo.id+','+k+','+ooo);
+          console.log(o[k]+'=='+oo[k])
+        });
+      });      
+    });
+    if (this.notsync){
+      return '';
+    }
+  }
 
 
   // проверка условий
@@ -545,6 +557,10 @@ var OTCLASS2 = function(inPar){
             }
           }else if (u[i][k][j]['type'] == '>='){
             if ( parseInt(r[k]) >= parseInt(u[i][k][j]['val'])){
+              y_count++;
+            }
+          }else if (u[i][k][j]['type'] == 'isnull'){
+            if (r[k] == ''){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == 'between'){
