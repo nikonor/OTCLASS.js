@@ -92,8 +92,9 @@ otclass.js и otclass2.js
 
 ### Удаление ###
 
-    ot.remove({'field':{'type':'==','val':5});
-    ot.remove({'field':[{'type':>','val':10},{'type':'<','val':20}]);        
+    ot.remove('field':{'type':'==','val':5});
+    ot.remove('field':[{'type':>','val':10},{'type':'<','val':20}]);   
+    ot.remove('field':{'type':'isnull'})     
     
 опять же простой вызов. мы указываем какое поле проверяем и чему оно должно быть равно, чтобы строка была удалена. 
 
@@ -107,6 +108,9 @@ otclass.js и otclass2.js
 * <=
 * like
 * between 
+* isnull
+
+
 
     
 ### Обновление ###
