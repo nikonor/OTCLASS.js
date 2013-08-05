@@ -427,8 +427,10 @@ var OTCLASS2 = function(inPar){
     // было update - вызываем update cо старыми данными
     // данные собираем в action_queue
 
+    this.before_sync();
     if (this.notsync){
       return '';
+      this.after_sync();
     }
 
     // console.log('call sync');
@@ -484,6 +486,7 @@ var OTCLASS2 = function(inPar){
             }            
             // удаляем задачу из списка, т.к. она уже как-то выполнена
             delete action_queue[data['dts']];
+            this.after_sync();
           }
         });
     };
