@@ -144,7 +144,8 @@ otclass.js и otclass2.js
 ### Обработка результата работы методов ###
 
 Методы add, remove и update возвращают deferred-объект. Соответственно, можно делать так:
-ot.update({'id':[{'type':'==','val':4}]},{'name':'Новое имя','age':100}).done(function(){alert('Успешно обновлено')}).fail(function(){alert('Не удалось обновить')}).always(function(){alert('Получилось или нет, посылаю вам привет')})
+
+    ot.update({'id':[{'type':'==','val':4}]},{'name':'Новое имя','age':100}).done(function(){alert('Успешно обновлено')}).fail(function(){alert('Не удалось обновить')}).always(function(){alert('Получилось или нет, посылаю вам привет')})
 
 ## На стороне сервера ##
 
