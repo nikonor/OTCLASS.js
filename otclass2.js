@@ -288,11 +288,10 @@ var OTCLASS2 = function(inPar){
     if (old_len + rows.length == this.data.length){
       // добавление прошло успешно
       this.render();
-      this.sync(data4sync);
-      ret = {'status':'Ok'};
+      ret = this.sync(data4sync);
     }else{
       // добавление не удалось
-      ret = {'status':'error','error_text':'Добавление не удалось'};
+      ret = $.Deferred().reject(); 
     }
     
     this.after_action();
@@ -324,11 +323,11 @@ var OTCLASS2 = function(inPar){
 
     if (this.data.length < old_len){
       this.render();
-      ret = {'status':'Ok'};
+      // ret = {'status':'Ok'};
       // console.log('syncing');
-      this.sync(data4sync);      
+      ret = this.sync(data4sync);      
     }else{
-      ret = {'status':'error','error_text':'Ничего не было удалено'}; 
+      ret = $.Deferred().reject(); 
     }
 
     this.after_action();
@@ -361,20 +360,14 @@ var OTCLASS2 = function(inPar){
         data4sync[key]['new_row'] = this.__clone(this.data[i]);
       }
     };
-
-    var ret = {};
-
     if (1 == 1){
       this.render();
-      ret = {'status':'Ok'};
-      this.sync(data4sync);      
+      ret = this.sync(data4sync);
     }else{
-      ret = {'status':'error','error_text':'Ничего не было заменено'}; 
+      ret = $.Deferred().reject();
     }
-
     this.after_action();
-    return ret;
-
+    return ret;      
   }; //.update
 
 
@@ -430,7 +423,21 @@ var OTCLASS2 = function(inPar){
     this.before_sync();
     if (this.notsync){
       this.after_sync();
-      return '';
+      return $.Deferred().resolve();
+    }
+
+    var OnErrorOrFail = function(data, dts, d){
+      onError(data['error_text']+'\n\naction:'+d[dts]['turn']+'\nobject:'+JSON.stringify(data)+'\nROLLBACK');
+      if (d[dts]['turn'] == 'add'){
+        rollback_add(action_queue[dts], {new_row: d[dts]['new_row']});
+      } else if (d[dts]['turn'] == 'update'){
+        rollback_update(action_queue[dts], {new_row: d[dts]['new_row'],
+                                            old_row: d[dts]['old_row']});
+      } else if (d[dts]['turn'] == 'remove'){
+        rollback_remove(action_queue[dts], {old_row: d[dts]['old_row']});
+      } else{
+        console.log("don't understand");
+      }
     }
 
     // console.log('call sync');
@@ -453,47 +460,40 @@ var OTCLASS2 = function(inPar){
         par = JSON.stringify(par);
       }
       
-      $.ajax({
-          url:      this.script_name,
-          data:     par,
-          dataType: 'json',
-          type:     'POST',
-          context:  this, 
-          success:function(data){
-            if (data['status'] == 'Ok'){
-              var flag = false;
-              var ID = action_queue[data['dts']]['obj'].__get_row(data.new_row['__otclass_id__']);
-              for (var k in data.new_row){
-                if ( !/^\_\_/.test(k) && data.new_row[k] != action_queue[data['dts']]['obj'].data[ID][k] ){
-                  // console.log(action_queue[data['dts']]['obj'].data[ID]);
-                  action_queue[data['dts']]['obj'].data[ID][k] = data.new_row[k];
-                  // console.log('change data for k='+k);
-                  // console.log(action_queue[data['dts']]['obj'].data[ID]);
-                  flag = true;
-                }
+      return $.ajax({
+        url:      this.script_name,
+        data:     par,
+        dataType: 'json',
+        type:     'POST',
+        context: this})
+        .done(function(data){
+          if (data['status'] == 'Ok'){
+            var flag = false;
+            var ID = action_queue[data['dts']]['obj'].__get_row(data.new_row['__otclass_id__']);
+            for (var k in data.new_row){
+              if ( !/^\_\_/.test(k) && data.new_row[k] != action_queue[data['dts']]['obj'].data[ID][k] ){
+                // console.log(action_queue[data['dts']]['obj'].data[ID]);
+                action_queue[data['dts']]['obj'].data[ID][k] = data.new_row[k];
+                // console.log('change data for k='+k);
+                // console.log(action_queue[data['dts']]['obj'].data[ID]);
+                flag = true;
               }
-              action_queue[data['dts']]['obj'].render();
-            }else{
-              onError(data['error_text']+'\n\naction:'+data['turn']+'\nobject:'+JSON.stringify(data)+'\nROLLBACK');
-              if (data['turn'] == 'add'){
-                rollback_add(action_queue[data['dts']],data);
-              }else if (data['turn'] == 'update'){
-                rollback_update(action_queue[data['dts']],data);
-              }else if (data['turn'] == 'remove'){
-                rollback_remove(action_queue[data['dts']],data);
-              }else{
-                console.log("don't understand");
-              }
-            }            
-            // удаляем задачу из списка, т.к. она уже как-то выполнена
-            delete action_queue[data['dts']];
-            this.after_sync();
-          }
-        });
+            }
+            action_queue[data['dts']]['obj'].render();
+          } else {
+            OnErrorOrFail(data, dts, d);
+          }            
+        })
+        .fail(function(){
+          OnErrorOrFail({error_text: "Ошибка на сервере. Пишите программистам."}, dts, d);
+        })
+        .always(function(){
+          // удаляем задачу из списка, т.к. она уже как-то выполнена
+          delete action_queue[dts];
+          this.after_sync();
+        })
     };
-
   }
-
 
 
   // рисуем окончательную версию

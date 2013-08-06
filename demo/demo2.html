@@ -419,34 +419,37 @@
     // }else{
     //   mes.e(e['error_text']);
     // }
-    var e = demo2.add({'id':101,'name':'Николаев','age':2});
-    if (e['status'] == 'Ok'){
+    var e = demo2.add({'id':101,'name':'Николаев','age':2})
+    .done(function(){
       mes.m('Добавление удалось');
-    }else{
-      mes.e(e['error_text']);
-    }
+    })
+    .fail(function(){
+      mes.e('Ничего не добавлено');
+    })
   }
 
   function remove_row(){
     var e = demo2.remove([
         {'id':[{'type':'==','val':101}]},
         {'age':[{'type':'>','val':1}]}
-        ]);
-    if (e['status'] == 'Ok'){
+        ])
+    .done(function(){
       mes.m('Удаление удалось');
-    }else{
-      mes.e(e['error_text']);
-    }    
+    })
+    .fail(function(){
+      mes.e('Ничего не удалено');
+    })   
   }
 
 
   function update_row(){
-    var e = demo2.update({'id':[{'type':'==','val':101}]},{'name':'НИКОЛАЕВ','age':3});
-    if (e['status'] == 'Ok'){
+    var e = demo2.update({'id':[{'type':'==','val':101}]},{'name':'НИКОЛАЕВ','age':3})
+    .done(function(){
       mes.m('Обновление удалось');
-    }else{
-      mes.e(e['error_text']);
-    }        
+    })
+    .fail(function(){
+      mes.e(e['Ничего не обновлено']);
+    })        
   }
 
 
