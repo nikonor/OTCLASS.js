@@ -128,6 +128,10 @@ var OTCLASS2 = function(inPar){
     this[key] = inPar[key];
   }
 
+  if (!this.method){
+    this.method = 'POST';
+  }
+
   // номер страницы, если нужно.
   if (this.page_limit > 0 && !this.page_no){
     this.page_no = 1;
@@ -464,7 +468,7 @@ var OTCLASS2 = function(inPar){
         url:      this.script_name,
         data:     par,
         dataType: 'json',
-        type:     'POST',
+        type:     this.method,
         context: this})
         .done(function(data){
           if (data['status'] == 'Ok'){
