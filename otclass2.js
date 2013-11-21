@@ -108,7 +108,7 @@ var OTCLASS2 = function(inPar){
     }
     d.data.sort(dynamicSortMultiple(fields))
   }
-  this.before_render = function (){};
+  this.before_render = function (d){return __clone(d);};
   this.after_render = function (){};
   this.before_sync = function (){};
   this.after_sync = function (){};
@@ -166,24 +166,24 @@ var OTCLASS2 = function(inPar){
   this.view = '';
 
   this.render = function (){
-    this.before_render();
+    begin_data = this.before_render(this.data);
 
     // накладываем фильтры
     
     for (var i = 0; i < this.data.length; i++) {
-      this.data[i]['__show__'] = false; //выставили всем, что не показываем
+      begin_data[i]['__show__'] = false; //выставили всем, что не показываем
       var y_count = 0;
       var f_count = 0;
       for (var f in filter_list){
         var u = {}; u[f] = filter_list[f];
-        if (!this.__check(u,this.data[i])){
-          // console.log('there:'+this.data[i]['name']+':'+this.data[i]['age']);
+        if (!this.__check(u,begin_data[i])){
+          // console.log('there:'+begin_data[i]['name']+':'+begin_data[i]['age']);
           y_count++;
         }
       }
-      // console.log(this.data[i]['name']+':f_count='+f_count+', y_count='+y_count);
+      // console.log(begin_data[i]['name']+':f_count='+f_count+', y_count='+y_count);
       if (f_count == y_count){
-        this.data[i]['__show__'] = true;
+        begin_data[i]['__show__'] = true;
       }
     };
 
@@ -195,7 +195,7 @@ var OTCLASS2 = function(inPar){
     }
 
     var beg_row = 0;
-    var end_row = this.data.length;
+    var end_row = begin_data.length;
 
     
     if (this.page_limit){
@@ -210,10 +210,10 @@ var OTCLASS2 = function(inPar){
     }
 
     var count = 0;
-    for (var i = 0; i < this.data.length; i++) {
-      if ( this.data[i]['__show__'] ){
+    for (var i = 0; i < begin_data.length; i++) {
+      if ( begin_data[i]['__show__'] ){
         if (beg_row <= count && count < end_row){
-          data4render['data'].push(__clone(this.data[i]));
+          data4render['data'].push(__clone(begin_data[i]));
         }
         count++;
         if (count > end_row){
