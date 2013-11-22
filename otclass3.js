@@ -37,10 +37,8 @@ var OTCLASS3 = {
       self.data[i]['__show__'] = true;
       self.data[i]['__no__'] = i+1;
     }
-    
 
-    console.log(self);
-
+    self.before_render = function(d){return self._clone(d);};
 
     self.filter_list = {};
 
@@ -181,24 +179,24 @@ var OTCLASS3 = {
     console.group('render');
     console.log('render_run');
     var self = this;
-    self.before_render();
+    begin_data = self.before_render(self.data);
 
     // накладываем фильтры
     
-    for (var i = 0; i < self.data.length; i++) {
-      self.data[i]['__show__'] = false; //выставили всем, что не показываем
+    for (var i = 0; i < begin_data.length; i++) {
+      begin_data[i]['__show__'] = false; //выставили всем, что не показываем
       var y_count = 0;
       var f_count = 0;
       for (var f in self.filter_list){
         var u = {}; u[f] = self.filter_list[f];
-        if (!self._check(u, self.data[i])){
+        if (!self._check(u, begin_data[i])){
           // console.log('there:'+this.data[i]['name']+':'+this.data[i]['age']);
           y_count++;
         }
       }
       // console.log(this.data[i]['name']+':f_count='+f_count+', y_count='+y_count);
       if (f_count == y_count){
-        self.data[i]['__show__'] = true;
+        begin_data[i]['__show__'] = true;
       }
     };
 
@@ -222,10 +220,10 @@ var OTCLASS3 = {
     }
 
     var count = 0;
-    for (var i = 0; i < self.data.length; i++) {
-      if ( self.data[i]['__show__'] ){
+    for (var i = 0; i < begin_data.length; i++) {
+      if ( begin_data[i]['__show__'] ){
         if (beg_row <= count && count < end_row){
-          data4render['data'].push(self._clone(self.data[i]));
+          data4render['data'].push(self._clone(begin_data[i]));
         }
         count++;
         if (count > end_row){
@@ -279,7 +277,7 @@ var OTCLASS3 = {
     Возвращает Deferred-объект */
     
     this.before_action(); 
-    var data4sync = {},
+    var data4sync = [],
         old_len = this.data.length;
 
     // если передали не массив, то делаем массив         
@@ -291,12 +289,7 @@ var OTCLASS3 = {
       rows[i]['__otclass_id__'] = this._uniq_gen();
       rows[i]['__show__'] = true;
       this.data.push(rows[i]);
-      var key = ''+dts()+this.data[i]['__otclass_id__'];
-
-      if(data4sync.hasOwnProperty(key)){
-        key = key + '-';
-      }
-      data4sync[key] = {'turn': 'add', 'id': null, 'new_row': this._clone(rows[i]), 'old_row': {}};
+      data4sync.push({'turn': 'add', 'id': null, 'new_row': this._clone(rows[i]), 'old_row': {}});
     };
 
     var ret = {};
@@ -315,7 +308,7 @@ var OTCLASS3 = {
   remove: function(condition){
     this.before_action();
 
-    var data4sync = {},
+    var data4sync = [],
         new_data = [],
         old_len = this.data.length;
 
@@ -323,11 +316,7 @@ var OTCLASS3 = {
       if ( !this._check(condition, this.data[i]) ){
         new_data.push(this._clone(this.data[i]));
       } else {
-        var key = ''+dts()+this.data[i]['__otclass_id__'];
-        if(data4sync.hasOwnProperty(key)){
-          key = key + '-';
-        }
-        data4sync[key] = {'turn': 'remove', 'id': this.data[i]['__otclass_id__'], 'old_row': this._clone(this.data[i])};
+        data4sync.push({'turn': 'remove', 'id': this.data[i]['__otclass_id__'], 'old_row': this._clone(this.data[i])});
       }
     };
 
@@ -346,7 +335,7 @@ var OTCLASS3 = {
 
   update: function(condition, rows){
     this.before_action();
-    var data4sync = {};
+    var data4sync = [];
 
     if (!rows.length){
       rows = [rows,];
@@ -354,27 +343,18 @@ var OTCLASS3 = {
 
     for (var i=0; i<this.data.length; i++) {
       if (this._check(condition, this.data[i])){
-        var key = ''+dts()+this.data[i]['__otclass_id__'];
-
-        if (data4sync.hasOwnProperty(key)){
-          key = key + '-';
-        }
-        data4sync[key] = {'turn': 'update', 'id': this.data[i]['__otclass_id__'], 'old_row': this._clone(this.data[i])};
-
+        new_val = {'turn': 'update', 'id': this.data[i]['__otclass_id__'], 'old_row': this._clone(this.data[i])};
         for (var j = 0; j < rows.length; j++) {
           for (var k in rows[j]){
             this.data[i][k] = rows[j][k];
           }
         };
-        data4sync[key]['new_row'] = this._clone(this.data[i]);
+        new_val['new_row'] = this._clone(this.data[i]);
+        data4sync.push(new_val);
       }
     };
-    // if (1 == 1){
     this.render();
     ret = this.sync(data4sync);
-    // }else{
-    //   ret = $.Deferred().reject();
-    // }
     this.after_action();
     return ret;      
   },
@@ -446,16 +426,15 @@ var OTCLASS3 = {
       self.after_sync();
       return [$.Deferred().resolve(),];
     }
-    $.each(data4sync, function(dts, v){
-      console.log('dts in the beginning', dts);
-      var par = {'dts': dts, 'obj': self.id};
-      if ( data4sync[dts]['turn'] == 'remove' ) {
-        par['old_row'] = data4sync[dts]['old_row'];
-      }else if ( data4sync[dts]['turn'] == 'update' ){
-        par['old_row'] = data4sync[dts]['old_row'];
-        par['new_row'] = data4sync[dts]['new_row'];
-      }else if ( data4sync[dts]['turn'] == 'add' ){
-        par['new_row'] = data4sync[dts]['new_row'];
+    $.each(data4sync, function(index, value){
+      var par = {'obj': self.id};
+      if ( this.turn == 'remove' ) {
+        par['old_row'] = this.old_row;
+      }else if ( this.turn == 'update' ){
+        par['old_row'] = this.old_row;
+        par['new_row'] = this.new_row;
+      }else if ( this.turn == 'add' ){
+        par['new_row'] = this.new_row;
       }
       
       if (self.stringify) {
@@ -464,24 +443,23 @@ var OTCLASS3 = {
       
       var request_types = {add: "POST", update: "PUT", remove: "DELETE", get: "GET"};
       requests.push($.ajax({
-        url:      self.script_name,
-        data:     par,
-        dataType: 'json',
-        type:     request_types[data4sync[dts]['turn']]})
+        url:        self.script_name,
+        data:       par,
+        dataType:   'json',
+        type:       request_types[this.turn],
+        context:    this})
         .done(function(data){
           self.render();
         })
         .statusCode({
           400:  function(data){
-                  self.OnErrorOrFail(data.responseJSON.message, data4sync[dts]);
+                  self.OnErrorOrFail(data.responseJSON.message, this);
                 },
           403:  function(){
-                  self.OnErrorOrFail({error_text: data.responseJSON.message}, data4sync[dts]);
+                  self.OnErrorOrFail(data.responseJSON.message, this);
                 },
           502:  function(data){
-                  console.log(dts);
-                  console.log(data);
-                  self.OnErrorOrFail({error_text: 'Ошибка на сервере. Пишите программистам.'}, data4sync[dts]);  
+                  self.OnErrorOrFail('Ошибка на сервере. Пишите программистам.', this);  
                 }
         })
         .always(function(){
@@ -493,7 +471,7 @@ var OTCLASS3 = {
   },
 
   OnErrorOrFail: function(data_from_server, failed_to_send_data){
-    this.onError(data_from_server['error_text']);
+    this.onError(data_from_server);
     this.rollback(failed_to_send_data);
   },
 
