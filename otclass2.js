@@ -170,7 +170,7 @@ var OTCLASS2 = function(inPar){
 
     // накладываем фильтры
     
-    for (var i = 0; i < this.data.length; i++) {
+    for (var i = 0; i < begin_data.length; i++) {
       begin_data[i]['__show__'] = false; //выставили всем, что не показываем
       var y_count = 0;
       var f_count = 0;
