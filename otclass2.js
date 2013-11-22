@@ -120,7 +120,6 @@ var OTCLASS2 = function(inPar){
   for (var key in inPar){
     if (key == 'div_id'){
       if (/[a-zA-Z]/.test(inPar[key].substr(0,1))){
-        console.log('тут');
         this[key] = '#'+inPar[key];
         inPar[key] = this[key];
       }
@@ -464,7 +463,7 @@ var OTCLASS2 = function(inPar){
         par = JSON.stringify(par);
       }
       
-      return $.ajax({
+      $.ajax({
         url:      this.script_name,
         data:     par,
         dataType: 'json',
