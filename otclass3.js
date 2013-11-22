@@ -22,30 +22,36 @@ var OTCLASS3 = {
     console.group('init');
     var self = this;
     
-    self.data = options.data;
-    delete options.data;
-    self.options = $.extend( {}, otclass3_options, options );
-    if (/[a-zA-Z]/.test(self.options['div_id'].substr(0,1))){
-      self.options['div_id'] = '#'+self.options['div_id'];
+    // self.data = options.data;
+    // delete options.data;
+    merged_options = $.extend( {}, otclass3_options, options );
+    if (/[a-zA-Z]/.test(merged_options['div_id'].substr(0,1))){
+      merged_options['div_id'] = '#'+merged_options['div_id'];
     }
+    for (i in merged_options){
+      this[i] = merged_options[i];
+    }
+
     for (var i = 0; i < self.data.length; i++) {
       self.data[i]['__otclass_id__'] = this._uniq_gen();
       self.data[i]['__show__'] = true;
       self.data[i]['__no__'] = i+1;
     }
     
-    self.options.before_render = function(d){return self._clone(d);};
+
+    console.log(self);
+
 
     self.filter_list = {};
 
     // номер страницы, если нужно.
-    if (self.options.page_limit > 0 && !self.options.page_no){
-      self.options.page_no = 1;
+    if (self.page_limit > 0 && !self.page_no){
+      self.page_no = 1;
     }
-    if (self.options.tmpl_type == 'Handlebars') {
-      self.tmpl = Handlebars.compile($("#"+self.options.tmpl_id).html());
-    } else if (self.options.tmpl_type == 'jquery-tmpl') {
-      self.tmpl = $("#"+self.options.tmpl_id).template();
+    if (self.tmpl_type == 'Handlebars') {
+      self.tmpl = Handlebars.compile($("#"+self.tmpl_id).html());
+    } else if (self.tmpl_type == 'jquery-tmpl') {
+      self.tmpl = $("#"+self.tmpl_id).template();
     }
 
     this.render();
@@ -127,7 +133,7 @@ var OTCLASS3 = {
   
   _uniq_gen: function(){
     // штука для того, чтобы каждый элемент массива данных имел уникальный id в рамках объекта
-    return (this.options.id)+'_'+(++this.options.uniq_count);
+    return (this.id)+'_'+(++this.uniq_count);
   },
 
   filter: function(uslovie, on){
@@ -175,66 +181,67 @@ var OTCLASS3 = {
     console.group('render');
     console.log('render_run');
     var self = this;
-    begin_data = self.options.before_render(self.data);
+    self.before_render();
 
     // накладываем фильтры
     
     for (var i = 0; i < self.data.length; i++) {
-      begin_data[i]['__show__'] = false; //выставили всем, что не показываем
+      self.data[i]['__show__'] = false; //выставили всем, что не показываем
       var y_count = 0;
       var f_count = 0;
       for (var f in self.filter_list){
         var u = {}; u[f] = self.filter_list[f];
-        if (!self._check(u, begin_data[i])){
+        if (!self._check(u, self.data[i])){
+          // console.log('there:'+this.data[i]['name']+':'+this.data[i]['age']);
           y_count++;
         }
       }
       // console.log(this.data[i]['name']+':f_count='+f_count+', y_count='+y_count);
       if (f_count == y_count){
-        begin_data[i]['__show__'] = true;
+        self.data[i]['__show__'] = true;
       }
     };
 
-    if (self.options.sort){
-      self._sort(self.options.sort);
+    if (self.sort){
+      self._sort(self.sort);
     }
 
     var beg_row = 0;
-    var end_row = begin_data.length;
+    var end_row = self.data.length;
 
     
-    if (self.options.page_limit){
-      beg_row = self.options.page_limit * (self.options.page_no-1);
-      end_row = self.options.page_limit * self.options.page_no + 1;
+    if (self.page_limit){
+      beg_row = self.page_limit * (self.page_no-1);
+      end_row = self.page_limit * self.page_no + 1;
     }
 
     var data4render = {data:[]};
 
-    if (self.options.page_no > 1){
-      data4render.leftnav = self.options.page_no - 1;
+    if (self.page_no > 1){
+      data4render.leftnav = self.page_no - 1;
     }
 
     var count = 0;
-    for (var i = 0; i < begin_data.length; i++) {
-      if ( begin_data[i]['__show__'] ){
+    for (var i = 0; i < self.data.length; i++) {
+      if ( self.data[i]['__show__'] ){
         if (beg_row <= count && count < end_row){
-          data4render['data'].push(self._clone(begin_data[i]));
+          data4render['data'].push(self._clone(self.data[i]));
         }
         count++;
         if (count > end_row){
-          data4render.rightnav = self.options.page_no + 1;
+          data4render.rightnav = self.page_no + 1;
           break;
         }
       }
     };
 
-    if (self.options.tmpl_type == 'Handlebars') {
+    if (self.tmpl_type == 'Handlebars') {
       var view = self.tmpl(data4render);
-    } else if (self.options.tmpl_type == 'jquery-tmpl') {
+    } else if (self.tmpl_type == 'jquery-tmpl') {
       var view = $.tmpl(self.tmpl, data4render);
     }
-    $(self.options.div_id).empty().append(view);
-    self.options.after_render();
+    $(self.div_id).empty().append(view);
+    self.after_render();
     console.groupEnd();
   },
 
@@ -271,7 +278,7 @@ var OTCLASS3 = {
     Каждый такой хэш получает уникальный ключ, упаковывается в data4sync и передётся в this.sync.
     Возвращает Deferred-объект */
     
-    this.options.before_action(); 
+    this.before_action(); 
     var data4sync = {},
         old_len = this.data.length;
 
@@ -301,12 +308,12 @@ var OTCLASS3 = {
       // добавление не удалось
       ret = $.Deferred().reject(); 
     }
-    this.options.after_action();
+    this.after_action();
     return ret;
   },
 
   remove: function(condition){
-    this.options.before_action();
+    this.before_action();
 
     var data4sync = {},
         new_data = [],
@@ -333,12 +340,12 @@ var OTCLASS3 = {
       ret = $.Deferred().reject(); 
     }
 
-    this.options.after_action();
+    this.after_action();
     return ret;
   },
 
   update: function(condition, rows){
-    this.options.before_action();
+    this.before_action();
     var data4sync = {};
 
     if (!rows.length){
@@ -368,7 +375,7 @@ var OTCLASS3 = {
     // }else{
     //   ret = $.Deferred().reject();
     // }
-    this.options.after_action();
+    this.after_action();
     return ret;      
   },
 
@@ -430,14 +437,14 @@ var OTCLASS3 = {
         requests = [];
     console.group('sync');
     console.log('data4sync', data4sync);
-    self.options.before_sync();
-    if (self.options.notsync){
-      self.options.after_sync();
+    self.before_sync();
+    if (self.notsync){
+      self.after_sync();
       return [$.Deferred().resolve(),];
     }
     $.each(data4sync, function(dts, v){
       console.log('dts in the beginning', dts);
-      var par = {'dts': dts, 'obj': self.options.id};
+      var par = {'dts': dts, 'obj': self.id};
       if ( data4sync[dts]['turn'] == 'remove' ) {
         par['old_row'] = data4sync[dts]['old_row'];
       }else if ( data4sync[dts]['turn'] == 'update' ){
@@ -447,13 +454,13 @@ var OTCLASS3 = {
         par['new_row'] = data4sync[dts]['new_row'];
       }
       
-      if (self.options.stringify) {
+      if (self.stringify) {
         par = JSON.stringify(par);
       }
       
       var request_types = {add: "POST", update: "PUT", remove: "DELETE", get: "GET"};
       requests.push($.ajax({
-        url:      self.options.script_name,
+        url:      self.script_name,
         data:     par,
         dataType: 'json',
         type:     request_types[data4sync[dts]['turn']]})
@@ -474,7 +481,7 @@ var OTCLASS3 = {
                 }
         })
         .always(function(){
-          self.options.after_sync();
+          self.after_sync();
         }))
     })
     console.groupEnd();
@@ -482,7 +489,7 @@ var OTCLASS3 = {
   },
 
   OnErrorOrFail: function(data_from_server, failed_to_send_data){
-    this.options.onError(data_from_server['error_text']);
+    this.onError(data_from_server['error_text']);
     this.rollback(failed_to_send_data);
   },
 
