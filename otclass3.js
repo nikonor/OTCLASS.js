@@ -390,39 +390,43 @@ var OTCLASS3 = {
       console.log("don't understand");
     }
   },
-  _rollback_add: function(action, data){
-    // console.log('call _rollback_add');
-    var new_data = [];
-    $.each(action['obj']['data'],function(i,o){
-      if (data['new_row']['__otclass_id__'] != o['__otclass_id__']) {
-        new_data.push(_clone(o));
+  _rollback_add: function(failed_to_send_data){
+    console.group('call _rollback_add');
+    var new_data = [],
+        self = this;
+    $.each(self.data, function(){
+      if (this.__otclass_id__ !== failed_to_send_data.new_row.__otclass_id__){
+        new_data.push(this);
       }
+      // if (data['new_row']['__otclass_id__'] != o['__otclass_id__']) {
+      //   new_data.push(_clone(o));
+      // }
     });
-    action['obj']['data'] = new_data;
-    action['obj'].render();
-  },
-
-  _rollback_remove: function(old_data){
-    console.group('call _rollback_remove');
-    console.log('this', this);
-    console.log('old_data', old_data);
-    this['data'].push(old_data['old_row'])
+    this.data = new_data;
     this.render();
     console.groupEnd();
   },
 
-  _rollback_update: function(action, data){
+  _rollback_remove: function(failed_to_send_data){
+    console.group('call _rollback_remove');
+    this['data'].push(failed_to_send_data['old_row'])
+    this.render();
+    console.groupEnd();
+  },
+
+  _rollback_update: function(failed_to_send_data){
     // console.log('call _rollback_update');
-    var new_data = [];
-    $.each(action['obj']['data'],function(i,o){
-      if (data['new_row']['__otclass_id__'] != o['__otclass_id__']) {
-        new_data.push(_clone(o));
+    var new_data = [],
+        self = this;
+    $.each(self.data, function(i, o){
+      if (failed_to_send_data.new_row.__otclass_id__ != this.__otclass_id__) {
+        new_data.push(this);
       }else{
-        new_data.push(_clone(data['old_row']));
+        new_data.push(failed_to_send_data.old_row);
       }
     });
-    action['obj']['data'] = new_data;
-    action['obj'].render();
+    self.data = new_data;
+    self.render();
   },
 
   sync: function(data4sync){
