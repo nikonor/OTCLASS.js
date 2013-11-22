@@ -1,0 +1,166 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>OTCLASS3 Demo</title>
+    <link href="http://yandex.st/bootstrap/3.0.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>body{padding-top: 10px;}</style>
+    <script id="tmpl_hb" type="text/x-handlebars-template">
+      <h4>Handlebars</h4>
+      <div class="panel panel-defaul">
+        <button class="btn btn-default add_line">Добавить имя</button>
+        <button class="btn btn-default remove_lines" data-value="10" data-type=">">Удалить id>10</button>
+        <button class="btn btn-default filter_lines" data-value="y">Отфильтровывать заканчивающиеся на "y"</button>
+      </div>
+      <div class="panel panel-default">
+        <button class="btn btn-default sort" data-id="name"><span class="glyphicon glyphicon-sort-by-attributes span_sort"> Имя</span></button>
+        <button class="btn btn-default sort" data-id="id"><span class="glyphicon glyphicon-sort-by-attributes span_sort"> ID</span></button>
+      </div>
+      {{#each data}}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            {{this.id}} – {{this.name}}
+            <button class="remove_line btn btn-default" data-id="{{this.id}}">Удалить id={{this.id}}</button>
+            <button class="change_line btn btn-default" data-id="{{this.id}}">Изменить имя у id={{this.id}}</button>
+          </div>
+        </div>
+      {{/each}}
+    </script>
+    
+    <script id="tmpl_jq" type="text/x-jquery-tmpl">
+      <h4>jQuery.tmpl</h4>
+      <div class="panel panel-defaul">
+        <button class="btn btn-default add_line">Добавить имя</button>
+        <button class="btn btn-default remove_lines" data-value="10" data-type=">">Удалить id>10</button>
+        <button class="btn btn-default filter_lines" data-value="y">Отфильтровывать заканчивающиеся на "y"</button>
+      </div>
+      <div class="panel panel-default">
+        <button class="btn btn-default sort" data-id="name"><span class="glyphicon glyphicon-sort-by-attributes span_sort"> Имя</span></button>
+        <button class="btn btn-default sort" data-id="id"><span class="glyphicon glyphicon-sort-by-attributes span_sort"> ID</span></button>
+      </div>
+      {{each(i,v) data}}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            ${v.id} – ${v.name}
+            <button class="remove_line btn btn-default" data-id="${v.id}">Удалить id=${v.id}</button>
+            <button class="change_line btn btn-default" data-id="${v.id}">Изменить имя у id=${v.id}</button>
+          </div>
+        </div>
+      {{/each}}
+    </script>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://yandex.st/bootstrap/3.0.2/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/handlebars-1.0.0.beta.6.js"></script>
+    <script type="text/javascript" src="./js/func.js"></script>
+    <script type="text/javascript" src="./js/jquery.tmpl.min.js"></script>
+    <script type="text/javascript" src='../otclass3.js'></script>
+
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var girl_names = [{id: 1, name: 'Sophia'}, {id: 2, name: 'Emma'}, {id: 3, name: 'Isabella'}, {id: 4, name: 'Olivia'}, {id: 5, name: 'Ava'}, {id: 6, name: 'Emily'}, {id: 7, name: 'Abigail'}, {id: 8, name: 'Mia'}, {id: 9, name: 'Madison'}, {id: 10, name: 'Elizabeth'}, {id: 11, name: 'Chloe'}, {id: 12, name: 'Ella'}, {id: 13, name: 'Avery'}, {id: 14, name: 'Addison'}, {id: 15, name: 'Aubrey'}, {id: 16, name: 'Lily'}, {id: 17, name: 'Natalie'}, {id: 18, name: 'Sofia'}, {id: 19, name: 'Charlotte'}, {id: 20, name: 'Zoey'}],
+            boy_names = [{id: 1+100, name: 'Aiden'}, {id: 2+100, name: 'Jackson'}, {id: 3+100, name: 'Ethan'}, {id: 4+100, name: 'Liam'}, {id: 5+100, name: 'Mason'}, {id: 6+100, name: 'Noah'}, {id: 7+100, name: 'Lucas'}, {id: 8+100, name: 'Jacob'}, {id: 9+100, name: 'Jayden'}, {id: 10+100, name: 'Jack'}, {id: 11+100, name: 'Logan'}, {id: 12+100, name: 'Ryan'}, {id: 13+100, name: 'Caleb'}, {id: 14+100, name: 'Benjamin'}, {id: 15+100, name: 'William'}, {id: 16+100, name: 'Michael'}, {id: 17+100, name: 'Alexander'}, {id: 18+100, name: 'Elijah'}, {id: 19+100, name: 'Matthew'}, {id: 20+100, name: 'Dylan'}],
+            otclass_obj;
+        
+        $(document).on('click', '.reset_do_defaults', function(){
+          reset();
+        })
+        $(document).on('click', 'button.remove_line', function(){
+          otclass_obj.remove({id: {type: '==', val: $(this).data('id')}});
+        })
+        $(document).on('click', 'button.add_line', function(){
+          var random_number = Math.floor((Math.random()*20)+1) - 1;
+          console.log(random_number, boy_names[random_number]);
+          otclass_obj.add(boy_names[random_number]);
+        })
+        $(document).on('click', 'button.sort', function(){
+          otclass_obj.sort($(this).data('id'));
+        })
+        $(document).on('click', 'button.remove_lines', function(){
+          otclass_obj.remove({id: {type: $(this).data('type'), val: $(this).data('value')}});
+        })
+        $(document).on('click', 'button.change_line', function(){
+          otclass_obj.update({id: {type: "==", val: $(this).data('id')}}, {name: 'ГЕННАДИЙ'});
+        })
+        $(document).on('click', 'button.filter_lines', function(){
+          otclass_obj.filter({name: {type: "like", val: 'y$'}}, true);
+        })
+        
+        function reset(){
+          console.group('reset');
+          params = get_params();
+          console.log(params);
+          if (params.hb == 1){
+            var tmpl = 'tmpl_hb',
+                tmpl_type = 'Handlebars';
+
+          } else {
+            var tmpl = 'tmpl_jq',
+                tmpl_type = 'jquery-tmpl';
+          }
+          var init_data = [];
+          for (i in {1: '', 2: '', 3: '', 4: '', 5: ''}){
+            var tmp_id = Math.floor((Math.random()*20)+1) - 1;
+            init_data.push(girl_names[tmp_id]);
+          }
+          console.log(init_data);
+          otclass_obj = otclass3({
+            'id': 'demo',
+            'data': init_data,
+            'div_id': '#main_div',
+            'script_name': '#',
+            'tmpl_id': tmpl,
+            'tmpl_type': tmpl_type,
+            // 'sort': 'id',
+            'notsync': 1
+          })
+          console.groupEnd();
+        }
+
+        function get_params(){
+          var params = {};
+          $.each($('.param'), function(){
+            var $this = $(this);
+            if ($this.data('name') in {'hb': 1, 'jq': 1}){
+              if ($this.is(':checked')) {
+                params[$this.data('name')] = 1;
+              }
+            } else{
+              params[$this.data('name')] = $this.data('value');
+            }
+          })
+          return params;
+        }
+        $('input[type="radio"]').eq(0).click();
+      }) //ready
+    </script>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-md-12">
+          <div id="controls">
+          <form role="form" class="">
+            <div class="form-group">
+              <label>
+                <input type="radio" class="param reset_do_defaults" name="tmpl" data-name="hb"> Handlebars
+              </label>
+              <label>
+                <input type="radio" class="param reset_do_defaults" name="tmpl" data-name="jq"> jQuery.tmpl
+              </label>
+            </div>
+          </form>
+          </div>
+          <div id="main_div">
+            
+          </div>
+      </div><!--/row-->
+    </div><!--/.container-->
+  </body>
+</html>
