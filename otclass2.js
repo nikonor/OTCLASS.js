@@ -251,6 +251,17 @@ var OTCLASS2 = function(inPar){
     return false;
   }
 
+  this.get_rows = function(uslovie,clone){
+    var ret = []
+    for (var i = 0; i < this.data.length ; i++) {
+      if (this.__check(uslovie,this.data[i])){
+        ret.push(clone?__clone(this.data[i]):this.data[i]);
+      }
+    }
+    return ret;
+  }
+
+
   this.get_row = function(uslovie,clone){
     for (var i = 0; i < this.data.length ; i++) {
       if (this.__check(uslovie,this.data[i])){
