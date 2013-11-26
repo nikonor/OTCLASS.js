@@ -295,7 +295,7 @@ var OTCLASS3 = {
     var ret = {};
     if (old_len + rows.length == this.data.length){
       // добавление прошло успешно
-      this.render();
+      // this.render();
       ret = this.sync(data4sync);
     } else {
       // добавление не удалось
@@ -323,7 +323,7 @@ var OTCLASS3 = {
     this.data = new_data;
 
     if (this.data.length < old_len){
-      this.render();
+      // this.render();
       ret = this.sync(data4sync);      
     }else{
       ret = $.Deferred().reject(); 
@@ -353,7 +353,7 @@ var OTCLASS3 = {
         data4sync.push(new_val);
       }
     };
-    this.render();
+    // this.render();
     ret = this.sync(data4sync);
     this.after_action();
     return ret;      
@@ -418,30 +418,35 @@ var OTCLASS3 = {
     // было update - вызываем update cо старыми данными
     // данные собираем в action_queue
     var self = this,
-        requests = [];
+        requests = [],
+        request_types = {add: "POST", update: "PUT", remove: "DELETE", get: "GET"};;
     console.group('sync');
     console.log('data4sync', data4sync);
     self.before_sync();
     if (self.notsync){
+      self.render();
       self.after_sync();
       return [$.Deferred().resolve(),];
     }
     $.each(data4sync, function(index, value){
-      var par = {'obj': self.id};
+      var par = {'obj': self.id}, 
+          current_otclass_elem_id;
       if ( this.turn == 'remove' ) {
         par['old_row'] = this.old_row;
+        current_otclass_elem_id = this.old_row.__otclass_id__;
       }else if ( this.turn == 'update' ){
         par['old_row'] = this.old_row;
         par['new_row'] = this.new_row;
+        current_otclass_elem_id = this.old_row.__otclass_id__;
       }else if ( this.turn == 'add' ){
         par['new_row'] = this.new_row;
+        current_otclass_elem_id = this.new_row.__otclass_id__;
       }
       
       if (self.stringify) {
         par = JSON.stringify(par);
       }
       
-      var request_types = {add: "POST", update: "PUT", remove: "DELETE", get: "GET"};
       requests.push($.ajax({
         url:        self.script_name,
         data:       par,
@@ -449,6 +454,17 @@ var OTCLASS3 = {
         type:       request_types[this.turn],
         context:    this})
         .done(function(data){
+          // Если ответ непустой, то находим в self.data текущий объект и загоняем в него значения из ответа
+          if (!$.isEmptyObject(data)){
+            $.each(self.data, function(key, value){
+              if (this.__otclass_id__ == current_otclass_elem_id) {
+                for (i in data){
+                  this[i] = data[i];
+                }
+              }
+              return;
+            })
+          }
           self.render();
         })
         .statusCode({
