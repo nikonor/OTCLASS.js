@@ -5,7 +5,6 @@ otclass3 = function( options ){
 };
 
 otclass3_options = {
-  before_render: function(){},
   after_render: function(){},
   before_sync: function(){},
   after_sync: function(){},
@@ -22,8 +21,8 @@ var OTCLASS3 = {
     console.group('init');
     var self = this;
     
-    // self.data = options.data;
-    // delete options.data;
+    self.before_render = function(d){return self._clone(d);};
+
     merged_options = $.extend( {}, otclass3_options, options );
     if (/[a-zA-Z]/.test(merged_options['div_id'].substr(0,1))){
       merged_options['div_id'] = '#'+merged_options['div_id'];
@@ -37,8 +36,6 @@ var OTCLASS3 = {
       self.data[i]['__show__'] = true;
       self.data[i]['__no__'] = i+1;
     }
-
-    self.before_render = function(d){return self._clone(d);};
 
     self.filter_list = {};
 
@@ -124,10 +121,10 @@ var OTCLASS3 = {
     console.groupEnd();
   },
 
-  sort: function(fields){
-    this._sort(fields);
-    this.render();
-  },
+  // sort: function(fields){
+  //   this._sort(fields);
+  //   this.render();
+  // },
   
   _uniq_gen: function(){
     // штука для того, чтобы каждый элемент массива данных имел уникальный id в рамках объекта
@@ -179,6 +176,10 @@ var OTCLASS3 = {
     console.group('render');
     console.log('render_run');
     var self = this;
+    if (self.sort){
+      console.log(('sort'), self.sort);
+      self._sort(self.sort);
+    }
     begin_data = self.before_render(self.data);
 
     // накладываем фильтры
@@ -200,9 +201,6 @@ var OTCLASS3 = {
       }
     };
 
-    if (self.sort){
-      self._sort(self.sort);
-    }
 
     var beg_row = 0;
     var end_row = self.data.length;
@@ -289,7 +287,7 @@ var OTCLASS3 = {
       rows[i]['__otclass_id__'] = this._uniq_gen();
       rows[i]['__show__'] = true;
       this.data.push(rows[i]);
-      data4sync.push({'turn': 'add', 'id': null, 'new_row': this._clone(rows[i]), 'old_row': {}});
+      data4sync.push({'turn': 'add', 'new_row': this._clone(rows[i]), 'old_row': {}});
     };
 
     var ret = {};
@@ -316,7 +314,7 @@ var OTCLASS3 = {
       if ( !this._check(condition, this.data[i]) ){
         new_data.push(this._clone(this.data[i]));
       } else {
-        data4sync.push({'turn': 'remove', 'id': this.data[i]['__otclass_id__'], 'old_row': this._clone(this.data[i])});
+        data4sync.push({'turn': 'remove', 'old_row': this._clone(this.data[i])});
       }
     };
 
@@ -343,7 +341,7 @@ var OTCLASS3 = {
 
     for (var i=0; i<this.data.length; i++) {
       if (this._check(condition, this.data[i])){
-        new_val = {'turn': 'update', 'id': this.data[i]['__otclass_id__'], 'old_row': this._clone(this.data[i])};
+        new_val = {'turn': 'update', 'old_row': this._clone(this.data[i])};
         for (var j = 0; j < rows.length; j++) {
           for (var k in rows[j]){
             this.data[i][k] = rows[j][k];
@@ -451,6 +449,7 @@ var OTCLASS3 = {
         url:        self.script_name,
         data:       par,
         dataType:   'json',
+        contentType: self.stringify ? "application/json; charset=utf-8" : 'application/x-www-form-urlencoded; charset=UTF-8',
         type:       request_types[this.turn],
         context:    this})
         .done(function(data){
