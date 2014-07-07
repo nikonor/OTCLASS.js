@@ -11,6 +11,7 @@ otclass3_options = {
   before_action: function(){},
   after_action: function(){},
   onError: function(){},
+  extra_data: '',
   tmpl_type: "Handlebars",
   view: "",
   uniq_count: 0
@@ -18,7 +19,6 @@ otclass3_options = {
 
 var OTCLASS3 = {    
   init: function( options ){
-    console.group('init');
     var self = this;
     
     self.before_render = function(d){return self._clone(d);};
@@ -50,7 +50,6 @@ var OTCLASS3 = {
     }
 
     this.render();
-    console.groupEnd();
   },
 
   _clone: function(obj) {
@@ -91,7 +90,6 @@ var OTCLASS3 = {
   },
   
   _sort: function(fields){
-    console.group('_sort');
     var self = this;
     if (!$.isArray(fields)){
       fields = [fields,];  
@@ -118,7 +116,6 @@ var OTCLASS3 = {
       }
     }
     self.data.sort(dynamicSortMultiple(fields));
-    console.groupEnd();
   },
 
   // sort: function(fields){
@@ -138,7 +135,6 @@ var OTCLASS3 = {
     if (uslovie.length){
       for (var i = 0; i < uslovie.length; i++) {
         for (var k in uslovie[i]){
-          // console.log('loop k='+k);
           if (uslovie[i][k]['val']){
             self.filter_list[k] = uslovie[i][k];
           }else{
@@ -148,7 +144,6 @@ var OTCLASS3 = {
       };
     }else{
       for (var k in uslovie){
-        // console.log('k='+k);
         if (uslovie[k]['val']){
           self.filter_list[k] = uslovie[k];
         }else{
@@ -158,7 +153,6 @@ var OTCLASS3 = {
     }
 
     self.page_no = 1;    
-    // console.log(filter_list);
 
     // for (var i = 0; i < this.data.length ; i++) {
     //   if ( on == 'on' && this.data[i]['__show__'] == true && !this.__check(uslovie,this.data[i]) ){
@@ -173,11 +167,8 @@ var OTCLASS3 = {
   },
 
   render: function(){
-    console.group('render');
-    console.log('render_run');
     var self = this;
     if (self.sort){
-      console.log(('sort'), self.sort);
       self._sort(self.sort);
     }
     begin_data = self.before_render(self.data);
@@ -191,11 +182,9 @@ var OTCLASS3 = {
       for (var f in self.filter_list){
         var u = {}; u[f] = self.filter_list[f];
         if (!self._check(u, begin_data[i])){
-          // console.log('there:'+this.data[i]['name']+':'+this.data[i]['age']);
           y_count++;
         }
       }
-      // console.log(this.data[i]['name']+':f_count='+f_count+', y_count='+y_count);
       if (f_count == y_count){
         begin_data[i]['__show__'] = true;
       }
@@ -211,7 +200,7 @@ var OTCLASS3 = {
       end_row = self.page_limit * self.page_no + 1;
     }
 
-    var data4render = {data:[]};
+    var data4render = {data: [], extra_data: self.extra_data};
 
     if (self.page_no > 1){
       data4render.leftnav = self.page_no - 1;
@@ -238,7 +227,6 @@ var OTCLASS3 = {
     }
     $(self.div_id).empty().append(view);
     self.after_render();
-    console.groupEnd();
   },
 
   // Control: тут управление 
@@ -365,11 +353,9 @@ var OTCLASS3 = {
     } else if (failed_to_send_data['turn'] == 'remove'){
       this._rollback_remove(failed_to_send_data);
     } else{
-      console.log("don't understand");
     }
   },
   _rollback_add: function(failed_to_send_data){
-    console.group('call _rollback_add');
     var new_data = [],
         self = this;
     $.each(self.data, function(){
@@ -382,18 +368,14 @@ var OTCLASS3 = {
     });
     this.data = new_data;
     this.render();
-    console.groupEnd();
   },
 
   _rollback_remove: function(failed_to_send_data){
-    console.group('call _rollback_remove');
     this['data'].push(failed_to_send_data['old_row'])
     this.render();
-    console.groupEnd();
   },
 
   _rollback_update: function(failed_to_send_data){
-    // console.log('call _rollback_update');
     var new_data = [],
         self = this;
     $.each(self.data, function(i, o){
@@ -418,8 +400,6 @@ var OTCLASS3 = {
     var self = this,
         requests = [],
         request_types = {add: "POST", update: "PUT", remove: "DELETE", get: "GET"};;
-    console.group('sync');
-    console.log('data4sync', data4sync);
     self.before_sync();
     if (self.notsync){
       self.render();
@@ -470,18 +450,17 @@ var OTCLASS3 = {
           400:  function(data){
                   self.OnErrorOrFail(data.responseJSON.message, this);
                 },
-          403:  function(){
+          403:  function(data){
                   self.OnErrorOrFail(data.responseJSON.message, this);
                 },
           502:  function(data){
-                  self.OnErrorOrFail('Ошибка на сервере. Пишите программистам.', this);  
+                  self.OnErrorOrFail('Ошибка на сервере. Пишите программистам.', this);
                 }
         })
         .always(function(){
           self.after_sync();
         }))
     })
-    console.groupEnd();
     return requests;
   },
 
@@ -491,13 +470,9 @@ var OTCLASS3 = {
   },
 
   check_update: function(new_data){
-    console.log(new_data);
-    console.log(this.data);
     $.each(this.data,function(i,o){
       $.each(new_data,function(j,oo){
         $.each(o,function(k,ooo){
-          // console.log(o.id+','+oo.id+','+k+','+ooo);
-          console.log(o[k]+'=='+oo[k])
         });
       });      
     });
@@ -532,7 +507,6 @@ var OTCLASS3 = {
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '=' || u[i][k][j]['type'] == '=='){
-            // console.log(parseInt(u[i][k][j]['val'], parseInt(r[k]) ));
             if (parseInt(u[i][k][j]['val']) == parseInt(r[k])){
               y_count++;
             }
@@ -566,6 +540,43 @@ var OTCLASS3 = {
             if ( re.test(r[k]) ){
               y_count++;
             }
+          }else if (u[i][k][j]['type'] == 'in'){
+            if ($.isArray(u[i][k][j]['val'])){
+              if ($.inArray(r[k], u[i][k][j]['val']) != -1){
+                y_count++;
+              }
+            } else {
+              if (r[k] in u[i][k][j]['val']){
+                y_count++;
+              }
+            }
+          }else if (u[i][k][j]['type'] == 'contain'){
+            var vals = u[i][k][j]['val'];
+            if (!$.isArray(vals)){
+              vals = [vals];
+            }
+            $.each(vals, function(){
+              if ($.isArray(r[k])){
+                if ($.inArray(this, r[k]) != -1){
+                  y_count++;
+                }
+              } else {
+                if (this in r[k]){
+                  y_count++;
+                }
+              }
+            })
+          }else if (u[i][k][j]['type'] == 'valuelike'){
+            u[i][k][j]['val'] = u[i][k][j]['val'].replace(/\s/g,".*?");
+            var re = new RegExp(u[i][k][j]['val'],'i');
+            var values_list=$.map(r[k], function(val){
+              return val;
+            });
+            $.each(values_list, function(){
+              if ( re.test(this) ){
+                y_count++;
+              }
+            })
           }
         };          
       }
