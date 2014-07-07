@@ -454,7 +454,7 @@ var OTCLASS3 = {
                   self.OnErrorOrFail(data.responseJSON.message, this);
                 },
           502:  function(data){
-                  self.OnErrorOrFail('Ошибка на сервере. Пишите программистам.', this);
+                  self.OnErrorOrFail('Ошибка на сервере.', this);
                 }
         })
         .always(function(){
