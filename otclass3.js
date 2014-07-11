@@ -37,7 +37,8 @@ var OTCLASS3 = {
       self.data[i]['__no__'] = i+1;
     }
 
-    self.filter_list = {};
+    self.filter_dict = {};
+    self.filter_func = function(item){return true}
 
     // номер страницы, если нужно.
     if (self.page_limit > 0 && !self.page_no){
@@ -128,40 +129,34 @@ var OTCLASS3 = {
     return (this.id)+'_'+(++this.uniq_count);
   },
 
-  filter: function(uslovie, on){
-    // on - если true, то включаем фильтр, если false - выключаем  
-    // tk переработать под стиль jQuery.filter() 
+  filter: function(uslovie){
+    // Загоняет условия в self.filter_dict и делает функцию filter_func, которая внутри render()
+    // применяется к каждому объекту из otclass.data, чтобы понять, надо его рисовать или нет
+    // uslovie: {dbeg: [{type: '>==', val: '12.12.1212'}, {type: '<==', val: '12.12.2012'}], ... }
     var self = this;
-    if (uslovie.length){
-      for (var i = 0; i < uslovie.length; i++) {
-        for (var k in uslovie[i]){
-          if (uslovie[i][k]['val']){
-            self.filter_list[k] = uslovie[i][k];
-          }else{
-            delete self.filter_list[k];
-          }
-        }          
-      };
-    }else{
-      for (var k in uslovie){
-        if (uslovie[k]['val']){
-          self.filter_list[k] = uslovie[k];
-        }else{
-          delete self.filter_list[k];
-        }
+
+    $.each(uslovie, function(key, val){
+      if (!$.isArray(val)){
+        uslovie[key] = [val];
       }
+    })
+
+    self.filter_dict = uslovie;
+
+    self.filter_func = function(item){
+      var yesno = true;
+      $.each(self.filter_dict, function(usl_key, val){
+        $.each(val, function(ind, val){
+          var tmp_usl = {};
+          tmp_usl[usl_key] = this;
+          yesno = yesno && self._check(tmp_usl, item);
+
+        })
+      })
+      return yesno;
     }
 
-    self.page_no = 1;    
-
-    // for (var i = 0; i < this.data.length ; i++) {
-    //   if ( on == 'on' && this.data[i]['__show__'] == true && !this.__check(uslovie,this.data[i]) ){
-    //     this.data[i]['__show__'] = false;
-    //   }else if ( on == 'off' && this.data[i]['__show__'] == false && this.__check(uslovie,this.data[i]) ){
-    //     mes.d('show::'+this.data[i]['name']);
-    //     this.data[i]['__show__'] = true;
-    //   }
-    // }
+    self.page_no = 1;
 
     self.render();
   },
@@ -174,26 +169,16 @@ var OTCLASS3 = {
     begin_data = self.before_render(self.data);
 
     // накладываем фильтры
-    
     for (var i = 0; i < begin_data.length; i++) {
-      begin_data[i]['__show__'] = false; //выставили всем, что не показываем
-      var y_count = 0;
-      var f_count = 0;
-      for (var f in self.filter_list){
-        var u = {}; u[f] = self.filter_list[f];
-        if (!self._check(u, begin_data[i])){
-          y_count++;
-        }
-      }
-      if (f_count == y_count){
+      if (self.filter_func(begin_data[i])){
         begin_data[i]['__show__'] = true;
+      } else{
+        begin_data[i]['__show__'] = false;
       }
     };
 
-
     var beg_row = 0;
     var end_row = self.data.length;
-
     
     if (self.page_limit){
       beg_row = self.page_limit * (self.page_no-1);
@@ -510,20 +495,40 @@ var OTCLASS3 = {
             if (parseInt(u[i][k][j]['val']) == parseInt(r[k])){
               y_count++;
             }
+          }else if (u[i][k][j]['type'] == '==='){
+            if (u[i][k][j]['val'] === r[k]){
+              y_count++;
+            }
           }else if (u[i][k][j]['type'] == '<'){
             if ( parseInt(r[k]) < parseInt(u[i][k][j]['val'])){
+              y_count++;
+            }
+          }else if (u[i][k][j]['type'] == '<<'){
+            if ( r[k] < u[i][k][j]['val']){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '<='){
             if ( parseInt(r[k]) <= parseInt(u[i][k][j]['val'])){
               y_count++;
             }
+          }else if (u[i][k][j]['type'] == '<==' || u[i][k][j]['type'] == '<<=' || u[i][k][j]['type'] == '<<=='){
+            if ( r[k] <= u[i][k][j]['val']){
+              y_count++;
+            }
           }else if (u[i][k][j]['type'] == '>'){
             if (  parseInt(r[k]) > parseInt(u[i][k][j]['val'])){
               y_count++;
             }
+          }else if (u[i][k][j]['type'] == '>>'){
+            if (  r[k] > u[i][k][j]['val']){
+              y_count++;
+            }
           }else if (u[i][k][j]['type'] == '>='){
             if ( parseInt(r[k]) >= parseInt(u[i][k][j]['val'])){
+              y_count++;
+            }
+          }else if (u[i][k][j]['type'] == '>==' || u[i][k][j]['type'] == '>>=' || u[i][k][j]['type'] == '>>=='){
+            if ( r[k] >= u[i][k][j]['val']){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == 'isnull'){
