@@ -17,15 +17,18 @@ otclass3_options = {
   uniq_count: 0
 };
 
-var OTCLASS3 = {    
+var OTCLASS3 = {
   init: function( options ){
     var self = this;
-    
+
     self.before_render = function(d){return self._clone(d);};
 
     merged_options = $.extend( {}, otclass3_options, options );
     if (/[a-zA-Z]/.test(merged_options['div_id'].substr(0,1))){
       merged_options['div_id'] = '#'+merged_options['div_id'];
+    }
+    if (/[a-zA-Z]/.test(merged_options['tmpl_id'].substr(0,1))){
+      merged_options['tmpl_id'] = '#'+merged_options['tmpl_id'];
     }
     for (i in merged_options){
       this[i] = merged_options[i];
@@ -45,9 +48,9 @@ var OTCLASS3 = {
       self.page_no = 1;
     }
     if (self.tmpl_type == 'Handlebars') {
-      self.tmpl = Handlebars.compile($("#"+self.tmpl_id).html());
+      self.tmpl = Handlebars.compile($(self.tmpl_id).html());
     } else if (self.tmpl_type == 'jquery-tmpl') {
-      self.tmpl = $("#"+self.tmpl_id).template();
+      self.tmpl = $(self.tmpl_id).template();
     }
 
     this.render();
@@ -89,11 +92,12 @@ var OTCLASS3 = {
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
   },
-  
+
   _sort: function(fields){
     var self = this;
     if (!$.isArray(fields)){
-      fields = [fields,];  
+      fields = [fields,];
+      self.sort = fields;
     }
     var dynamicSort = function(field) {
       var sortOrder = 1;
@@ -123,7 +127,7 @@ var OTCLASS3 = {
   //   this._sort(fields);
   //   this.render();
   // },
-  
+
   _uniq_gen: function(){
     // штука для того, чтобы каждый элемент массива данных имел уникальный id в рамках объекта
     return (this.id)+'_'+(++this.uniq_count);
@@ -179,7 +183,7 @@ var OTCLASS3 = {
 
     var beg_row = 0;
     var end_row = self.data.length;
-    
+
     if (self.page_limit){
       beg_row = self.page_limit * (self.page_no-1);
       end_row = self.page_limit * self.page_no + 1;
@@ -214,7 +218,7 @@ var OTCLASS3 = {
     self.after_render();
   },
 
-  // Control: тут управление 
+  // Control: тут управление
   set: function(key, value){
     this[key] = value;
   },
@@ -237,8 +241,8 @@ var OTCLASS3 = {
     return false;
   },
 
-  get: function(key){
-    return this[key];
+  get: function(uslovie, clone){
+    return this.get_row(uslovie, clone);
   },
 
   add: function(rows){
@@ -246,12 +250,12 @@ var OTCLASS3 = {
     новыми данными и пустыми старыми данными.
     Каждый такой хэш получает уникальный ключ, упаковывается в data4sync и передётся в this.sync.
     Возвращает Deferred-объект */
-    
-    this.before_action(); 
+
+    this.before_action();
     var data4sync = [],
         old_len = this.data.length;
 
-    // если передали не массив, то делаем массив         
+    // если передали не массив, то делаем массив
     if (!rows.length){
       rows = [rows,];
     }
@@ -270,7 +274,7 @@ var OTCLASS3 = {
       ret = this.sync(data4sync);
     } else {
       // добавление не удалось
-      ret = $.Deferred().reject(); 
+      ret = $.Deferred().reject();
     }
     this.after_action();
     return ret;
@@ -295,9 +299,9 @@ var OTCLASS3 = {
 
     if (this.data.length < old_len){
       // this.render();
-      ret = this.sync(data4sync);      
+      ret = this.sync(data4sync);
     }else{
-      ret = $.Deferred().reject(); 
+      ret = $.Deferred().reject();
     }
 
     this.after_action();
@@ -327,7 +331,7 @@ var OTCLASS3 = {
     // this.render();
     ret = this.sync(data4sync);
     this.after_action();
-    return ret;      
+    return ret;
   },
 
   rollback: function(failed_to_send_data){
@@ -375,8 +379,8 @@ var OTCLASS3 = {
   },
 
   sync: function(data4sync){
-    // action_queue.push 
-    // тут надо вызывать если что-то пошло не так 
+    // action_queue.push
+    // тут надо вызывать если что-то пошло не так
     // поэтому надо будет откатывать изменения, т.е.
     // было add вызываем remove, где условие тоже самое, что было строкой в add
     // было remove - вызываем add с собранными данными
@@ -392,7 +396,7 @@ var OTCLASS3 = {
       return [$.Deferred().resolve(),];
     }
     $.each(data4sync, function(index, value){
-      var par = {'obj': self.id}, 
+      var par = {'obj': self.id},
           current_otclass_elem_id;
       if ( this.turn == 'remove' ) {
         par['old_row'] = this.old_row;
@@ -405,11 +409,11 @@ var OTCLASS3 = {
         par['new_row'] = this.new_row;
         current_otclass_elem_id = this.new_row.__otclass_id__;
       }
-      
+
       if (self.stringify) {
         par = JSON.stringify(par);
       }
-      
+
       requests.push($.ajax({
         url:        self.script_name,
         data:       par,
@@ -459,7 +463,7 @@ var OTCLASS3 = {
       $.each(new_data,function(j,oo){
         $.each(o,function(k,ooo){
         });
-      });      
+      });
     });
     if (this.notsync){
       return '';
@@ -469,7 +473,7 @@ var OTCLASS3 = {
   _check: function(u,r){
     // проверка условий
     if (!u.length){
-      var _u = []; 
+      var _u = [];
       _u.push(u);
       u = _u;
     }
@@ -481,7 +485,7 @@ var OTCLASS3 = {
     for (var i = 0; i < u.length; i++) {
       for (var k in u[i]){
         if (!u[i][k].length){
-          var _u = []; 
+          var _u = [];
           _u.push(u[i][k]);
           u[i][k] = _u;
         }
@@ -492,43 +496,23 @@ var OTCLASS3 = {
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '=' || u[i][k][j]['type'] == '=='){
-            if (parseInt(u[i][k][j]['val']) == parseInt(r[k])){
-              y_count++;
-            }
-          }else if (u[i][k][j]['type'] == '==='){
-            if (u[i][k][j]['val'] === r[k]){
+            if (u[i][k][j]['val'] == r[k]){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '<'){
-            if ( parseInt(r[k]) < parseInt(u[i][k][j]['val'])){
-              y_count++;
-            }
-          }else if (u[i][k][j]['type'] == '<<'){
-            if ( r[k] < u[i][k][j]['val']){
+            if (r[k] < u[i][k][j]['val']){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '<='){
-            if ( parseInt(r[k]) <= parseInt(u[i][k][j]['val'])){
-              y_count++;
-            }
-          }else if (u[i][k][j]['type'] == '<==' || u[i][k][j]['type'] == '<<=' || u[i][k][j]['type'] == '<<=='){
-            if ( r[k] <= u[i][k][j]['val']){
+            if (r[k] <= u[i][k][j]['val']){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '>'){
-            if (  parseInt(r[k]) > parseInt(u[i][k][j]['val'])){
-              y_count++;
-            }
-          }else if (u[i][k][j]['type'] == '>>'){
-            if (  r[k] > u[i][k][j]['val']){
+            if (r[k] > u[i][k][j]['val']){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == '>='){
-            if ( parseInt(r[k]) >= parseInt(u[i][k][j]['val'])){
-              y_count++;
-            }
-          }else if (u[i][k][j]['type'] == '>==' || u[i][k][j]['type'] == '>>=' || u[i][k][j]['type'] == '>>=='){
-            if ( r[k] >= u[i][k][j]['val']){
+            if (r[k] >= u[i][k][j]['val']){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == 'isnull'){
@@ -536,7 +520,7 @@ var OTCLASS3 = {
               y_count++;
             }
           }else if (u[i][k][j]['type'] == 'between'){
-            if ( parseInt(u[i][k][j]['val'][0]) <= parseInt(r[k]) && parseInt(r[k]) <= parseInt(u[i][k][j]['val'][1]) ){
+            if (u[i][k][j]['val'][0] <= r[k] && r[k] <= u[i][k][j]['val'][1]){
               y_count++;
             }
           }else if (u[i][k][j]['type'] == 'like'){
@@ -560,14 +544,16 @@ var OTCLASS3 = {
             if (!$.isArray(vals)){
               vals = [vals];
             }
-            $.each(vals, function(){
+            $.each(vals, function(index, val){
               if ($.isArray(r[k])){
-                if ($.inArray(this, r[k]) != -1){
+                if ($.inArray(val, r[k]) != -1){
                   y_count++;
+                  return false;
                 }
               } else {
-                if (this in r[k]){
+                if (val in r[k]){
                   y_count++;
+                  return false;
                 }
               }
             })
@@ -583,7 +569,7 @@ var OTCLASS3 = {
               }
             })
           }
-        };          
+        };
       }
     };
     if (y_count == u_count){
