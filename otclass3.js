@@ -233,6 +233,7 @@ var OTCLASS3 = {
   },
 
   get_row: function(uslovie, clone){
+    var self = this;
     for (var i = 0; i < this.data.length ; i++) {
       if (this._check(uslovie, this.data[i])){
         return (clone ? self._clone(this.data[i]) : this.data[i]);
