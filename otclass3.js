@@ -133,7 +133,7 @@ var OTCLASS3 = {
     return (this.id)+'_'+(++this.uniq_count);
   },
 
-  filter: function(uslovie){
+  filter: function(uslovie,notrender){
     // Загоняет условия в self.filter_dict и делает функцию filter_func, которая внутри render()
     // применяется к каждому объекту из otclass.data, чтобы понять, надо его рисовать или нет
     // uslovie: {dbeg: [{type: '>==', val: '12.12.1212'}, {type: '<==', val: '12.12.2012'}], ... }
@@ -162,7 +162,9 @@ var OTCLASS3 = {
 
     self.page_no = 1;
 
-    self.render();
+    if (!notrender) {
+      self.render();
+    }
   },
 
   render: function(){
